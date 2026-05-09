@@ -86,4 +86,5 @@ export const nicheBundleQuery = (slug: string) =>
     staleTime: 30_000,
   });
 
-export type NicheBundle = NonNullable<Awaited<ReturnType<ReturnType<typeof nicheBundleQuery>["queryFn"]>>>;
+type NicheBundleFn = NonNullable<ReturnType<typeof nicheBundleQuery>["queryFn"]>;
+export type NicheBundle = NonNullable<Awaited<ReturnType<NicheBundleFn>>>;
