@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NicheSlugRouteImport } from './routes/niche.$slug'
 import { Route as NicheSlugIndexRouteImport } from './routes/niche.$slug.index'
@@ -17,6 +18,11 @@ import { Route as NicheSlugProjectsRouteImport } from './routes/niche.$slug.proj
 import { Route as NicheSlugEmailDesignsRouteImport } from './routes/niche.$slug.email-designs'
 import { Route as NicheSlugCertificationsRouteImport } from './routes/niche.$slug.certifications'
 
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -55,6 +61,7 @@ const NicheSlugCertificationsRoute = NicheSlugCertificationsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/niche/$slug': typeof NicheSlugRouteWithChildren
   '/niche/$slug/certifications': typeof NicheSlugCertificationsRoute
   '/niche/$slug/email-designs': typeof NicheSlugEmailDesignsRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/niche/$slug/certifications': typeof NicheSlugCertificationsRoute
   '/niche/$slug/email-designs': typeof NicheSlugEmailDesignsRoute
   '/niche/$slug/projects': typeof NicheSlugProjectsRoute
@@ -73,6 +81,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/niche/$slug': typeof NicheSlugRouteWithChildren
   '/niche/$slug/certifications': typeof NicheSlugCertificationsRoute
   '/niche/$slug/email-designs': typeof NicheSlugEmailDesignsRoute
@@ -84,6 +93,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/niche/$slug'
     | '/niche/$slug/certifications'
     | '/niche/$slug/email-designs'
@@ -93,6 +103,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/niche/$slug/certifications'
     | '/niche/$slug/email-designs'
     | '/niche/$slug/projects'
@@ -101,6 +112,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/niche/$slug'
     | '/niche/$slug/certifications'
     | '/niche/$slug/email-designs'
@@ -111,11 +123,19 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   NicheSlugRoute: typeof NicheSlugRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -190,6 +210,7 @@ const NicheSlugRouteWithChildren = NicheSlugRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   NicheSlugRoute: NicheSlugRouteWithChildren,
 }
 export const routeTree = rootRouteImport
