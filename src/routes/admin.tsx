@@ -162,6 +162,7 @@ function Dashboard() {
       </header>
 
       <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
+        <NewNicheCard onCreated={(slug) => setActiveSlug(slug)} />
         <NicheEditor key={activeSlug} slug={activeSlug} />
       </main>
     </div>
