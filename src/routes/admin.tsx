@@ -219,6 +219,7 @@ function SettingsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void 
         full_name: form.full_name, title: form.title, hero_tagline: form.hero_tagline,
         bio: form.bio, email: form.email, phone: form.phone, whatsapp: form.whatsapp,
         location: form.location, profile_picture_url: form.profile_picture_url,
+        hero_background_url: form.hero_background_url,
         projects_count: Number(form.projects_count) || 0,
         happy_clients: Number(form.happy_clients) || 0,
         years_experience: Number(form.years_experience) || 0,
