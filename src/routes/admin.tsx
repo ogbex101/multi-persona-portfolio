@@ -396,3 +396,118 @@ function StarSection({
     </Card>
   );
 }
+
+function NewNicheCard({ onCreated }: { onCreated: (slug: string) => void }) {
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [displayName, setDisplayName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [tagline, setTagline] = useState("");
+  const [primary, setPrimary] = useState("#2563EB");
+  const [accent, setAccent] = useState("#F59E0B");
+  const [heroBg, setHeroBg] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  function autoSlug(v: string) {
+    setDisplayName(v);
+    if (!slug || slug === toSlug(displayName)) setSlug(toSlug(v));
+  }
+
+  async function create() {
+    if (!displayName || !slug) {
+      toast.error("Display name and slug are required");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { data: existing } = await supabase.from("niches").select("id").eq("slug", slug).maybeSingle();
+      if (existing) throw new Error("That slug is already taken");
+
+      const { data: niche, error } = await supabase.from("niches")
+        .insert({ slug, display_name: displayName, sort_order: 99, is_active: true })
+        .select().single();
+      if (error) throw error;
+
+      await supabase.from("niche_settings").insert({
+        niche_id: niche.id,
+        full_name: "Ogbeifun Daniel Osewe",
+        title: displayName,
+        hero_tagline: tagline || `Welcome to my ${displayName} portfolio.`,
+        primary_color: primary,
+        accent_color: accent,
+        hero_background_url: heroBg || null,
+      });
+
+      const sections = [
+        { section_name: "services", max_display: 6 },
+        { section_name: "projects", max_display: 6 },
+        { section_name: "testimonials", max_display: 6 },
+        { section_name: "brand_logos", max_display: 8 },
+      ];
+      await supabase.from("niche_homepage_limits").insert(
+        sections.map((s) => ({ niche_id: niche.id, ...s }))
+      );
+
+      toast.success(`Niche "${displayName}" created`);
+      qc.invalidateQueries({ queryKey: ["niches"] });
+      onCreated(slug);
+      setOpen(false);
+      setDisplayName(""); setSlug(""); setTagline(""); setHeroBg("");
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (!open) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-between py-4">
+          <div>
+            <div className="font-medium">Add a new niche</div>
+            <div className="text-xs text-muted-foreground">Create another professional identity (e.g. Photographer, Coach…)</div>
+          </div>
+          <Button onClick={() => setOpen(true)} variant="outline">
+            <Plus className="mr-1 h-4 w-4" /> New niche
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader><CardTitle>New niche</CardTitle></CardHeader>
+      <CardContent className="grid gap-4 md:grid-cols-2">
+        <div>
+          <Label>Display name *</Label>
+          <Input value={displayName} onChange={(e) => autoSlug(e.target.value)} placeholder="Photographer" />
+        </div>
+        <div>
+          <Label>URL slug *</Label>
+          <Input value={slug} onChange={(e) => setSlug(toSlug(e.target.value))} placeholder="photographer" />
+          <p className="mt-1 text-xs text-muted-foreground">Public URL: /niche/{slug || "your-slug"}</p>
+        </div>
+        <div className="md:col-span-2">
+          <Label>Hero tagline</Label>
+          <Input value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="One line that sums up this niche." />
+        </div>
+        <div className="md:col-span-2">
+          <Label>Hero background image URL</Label>
+          <Input value={heroBg} onChange={(e) => setHeroBg(e.target.value)} placeholder="https://…" />
+        </div>
+        <ColorField label="Primary color" value={primary} onChange={setPrimary} />
+        <ColorField label="Accent color" value={accent} onChange={setAccent} />
+        <div className="md:col-span-2 flex gap-2">
+          <Button onClick={create} disabled={busy}>{busy ? "Creating…" : "Create niche"}</Button>
+          <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function toSlug(v: string) {
+  return v.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
