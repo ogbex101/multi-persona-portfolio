@@ -173,6 +173,7 @@ export type Database = {
           font_family: string | null
           full_name: string | null
           happy_clients: number | null
+          hero_background_url: string | null
           hero_tagline: string | null
           id: string
           location: string | null
@@ -196,6 +197,7 @@ export type Database = {
           font_family?: string | null
           full_name?: string | null
           happy_clients?: number | null
+          hero_background_url?: string | null
           hero_tagline?: string | null
           id?: string
           location?: string | null
@@ -219,6 +221,7 @@ export type Database = {
           font_family?: string | null
           full_name?: string | null
           happy_clients?: number | null
+          hero_background_url?: string | null
           hero_tagline?: string | null
           id?: string
           location?: string | null
