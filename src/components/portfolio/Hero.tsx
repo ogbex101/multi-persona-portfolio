@@ -3,10 +3,21 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 export function Hero({ bundle }: { bundle: NicheBundle }) {
-  const s = bundle.settings;
+  const s = bundle.settings as any;
+  const bg = s?.hero_background_url;
   return (
     <section className="relative overflow-hidden bg-gradient-hero">
-      <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:py-28 lg:px-8 lg:py-32">
+      {bg && (
+        <>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-cover bg-center opacity-25"
+            style={{ backgroundImage: `url(${bg})` }}
+          />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
+        </>
+      )}
+      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:py-28 lg:px-8 lg:py-32">
         <div className="space-y-6">
           <div className="reveal inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
             <Sparkles className="h-3 w-3 text-[color:var(--brand-accent-hex)]" />
