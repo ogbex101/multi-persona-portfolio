@@ -209,6 +209,7 @@ function SettingsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void 
     ["full_name", "Full Name"], ["title", "Title"], ["hero_tagline", "Hero Tagline"],
     ["email", "Email"], ["phone", "Phone"], ["whatsapp", "WhatsApp"], ["location", "Location"],
     ["profile_picture_url", "Profile Picture URL"],
+    ["hero_background_url", "Hero Background Image URL"],
   ] as const), []);
 
   async function save() {
