@@ -57,7 +57,7 @@ export function Hero({ bundle }: { bundle: NicheBundle }) {
               ) : (
                 <div className="grid h-full w-full place-items-center bg-gradient-brand">
                   <span className="font-display text-7xl font-bold text-primary-foreground">
-                    {(s?.full_name ?? "ODO").split(" ").map((n) => n[0]).join("").slice(0, 3)}
+                    {(s?.full_name ?? "ODO").split(" ").map((n: string) => n[0]).join("").slice(0, 3)}
                   </span>
                 </div>
               )}
