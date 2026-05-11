@@ -11,10 +11,11 @@ export function Hero({ bundle }: { bundle: NicheBundle }) {
         <>
           <div
             aria-hidden
-            className="absolute inset-0 bg-cover bg-center opacity-25"
+            className="absolute inset-0 scale-105 bg-cover bg-center opacity-40"
             style={{ backgroundImage: `url(${bg})` }}
           />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/50 to-background" />
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+          <div aria-hidden className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,color-mix(in_oklab,var(--brand-accent-hex)_25%,transparent),transparent_60%)]" />
         </>
       )}
       <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 md:grid-cols-2 md:py-28 lg:px-8 lg:py-32">

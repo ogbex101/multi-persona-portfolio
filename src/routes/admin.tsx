@@ -431,28 +431,42 @@ function SettingsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void 
     ["email", "Email"], ["phone", "Phone"], ["whatsapp", "WhatsApp"], ["location", "Location"],
   ] as const), []);
 
+  async function persist(next: any, opts?: { silent?: boolean }) {
+    const payload = {
+      niche_id: bundle.niche.id,
+      full_name: next.full_name, title: next.title, hero_tagline: next.hero_tagline,
+      bio: next.bio, email: next.email, phone: next.phone, whatsapp: next.whatsapp,
+      location: next.location, profile_picture_url: next.profile_picture_url,
+      hero_background_url: next.hero_background_url,
+      projects_count: Number(next.projects_count) || 0,
+      happy_clients: Number(next.happy_clients) || 0,
+      years_experience: Number(next.years_experience) || 0,
+      updated_at: new Date().toISOString(),
+    };
+    const { error } = bundle.settings
+      ? await supabase.from("niche_settings").update(payload).eq("niche_id", bundle.niche.id)
+      : await supabase.from("niche_settings").insert(payload);
+    if (error) throw error;
+    if (!opts?.silent) toast.success("Settings saved");
+    onSaved();
+  }
+
   async function save() {
     setBusy(true);
-    try {
-      const payload = {
-        niche_id: bundle.niche.id,
-        full_name: form.full_name, title: form.title, hero_tagline: form.hero_tagline,
-        bio: form.bio, email: form.email, phone: form.phone, whatsapp: form.whatsapp,
-        location: form.location, profile_picture_url: form.profile_picture_url,
-        hero_background_url: form.hero_background_url,
-        projects_count: Number(form.projects_count) || 0,
-        happy_clients: Number(form.happy_clients) || 0,
-        years_experience: Number(form.years_experience) || 0,
-        updated_at: new Date().toISOString(),
-      };
-      const { error } = bundle.settings
-        ? await supabase.from("niche_settings").update(payload).eq("niche_id", bundle.niche.id)
-        : await supabase.from("niche_settings").insert(payload);
-      if (error) throw error;
-      toast.success("Settings saved");
-      onSaved();
-    } catch (e: any) { toast.error(e.message); }
+    try { await persist(form); }
+    catch (e: any) { toast.error(e.message); }
     finally { setBusy(false); }
+  }
+
+  async function handlePersistField(field: "profile_picture_url" | "hero_background_url", url: string) {
+    const next = { ...form, [field]: url };
+    setForm(next);
+    try {
+      await persist(next, { silent: true });
+      toast.success(url ? "Image saved to homepage" : "Image removed");
+    } catch (e: any) {
+      toast.error(`Saved upload but failed to update settings: ${e.message}`);
+    }
   }
 
   return (
@@ -470,10 +484,10 @@ function SettingsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void 
           <Textarea rows={4} value={form.bio ?? ""} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
         </div>
         <div className="md:col-span-2">
-          <FileField label="Profile picture" value={form.profile_picture_url ?? ""} onChange={(v) => setForm({ ...form, profile_picture_url: v })} folder="profiles" accept="image/*" />
+          <FileField label="Profile picture" value={form.profile_picture_url ?? ""} onChange={(v) => setForm({ ...form, profile_picture_url: v })} onPersist={(v) => handlePersistField("profile_picture_url", v)} folder="profiles" accept="image/*" helperText="Auto-saves to your homepage on upload." />
         </div>
         <div className="md:col-span-2">
-          <FileField label="Hero background image" value={form.hero_background_url ?? ""} onChange={(v) => setForm({ ...form, hero_background_url: v })} folder="hero" accept="image/*" />
+          <FileField label="Hero background image" value={form.hero_background_url ?? ""} onChange={(v) => setForm({ ...form, hero_background_url: v })} onPersist={(v) => handlePersistField("hero_background_url", v)} folder="hero" accept="image/*" helperText="Auto-saves to your homepage on upload." />
         </div>
         <div><Label>Projects Count</Label><Input type="number" value={form.projects_count ?? 0} onChange={(e) => setForm({ ...form, projects_count: e.target.value })} /></div>
         <div><Label>Happy Clients</Label><Input type="number" value={form.happy_clients ?? 0} onChange={(e) => setForm({ ...form, happy_clients: e.target.value })} /></div>

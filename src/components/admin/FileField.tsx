@@ -10,6 +10,8 @@ type Props = {
   label: string;
   value: string;
   onChange: (url: string) => void;
+  /** Called only when a file upload completes or the value is cleared. Use for auto-persist. */
+  onPersist?: (url: string) => void;
   accept?: string;
   folder?: string;
   preview?: "image" | "video" | "auto" | "none";
@@ -20,6 +22,7 @@ export function FileField({
   label,
   value,
   onChange,
+  onPersist,
   accept = "image/*",
   folder = "uploads",
   preview = "auto",
@@ -33,6 +36,7 @@ export function FileField({
     try {
       const url = await uploadToPortfolio(file, folder);
       onChange(url);
+      onPersist?.(url);
       toast.success("Uploaded");
     } catch (e: any) {
       toast.error(e.message ?? "Upload failed");
@@ -40,6 +44,11 @@ export function FileField({
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
     }
+  }
+
+  function handleRemove() {
+    onChange("");
+    onPersist?.("");
   }
 
   const isVideo =
@@ -63,7 +72,7 @@ export function FileField({
           {busy ? "Uploading…" : value ? "Replace file" : "Upload from device"}
         </Button>
         {value && (
-          <Button type="button" variant="outline" size="sm" onClick={() => onChange("")}>
+          <Button type="button" variant="outline" size="sm" onClick={handleRemove}>
             <X className="mr-1 h-3 w-3" /> Remove
           </Button>
         )}
