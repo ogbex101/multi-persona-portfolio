@@ -36,6 +36,7 @@ export function FileField({
     try {
       const url = await uploadToPortfolio(file, folder);
       onChange(url);
+      onPersist?.(url);
       toast.success("Uploaded");
     } catch (e: any) {
       toast.error(e.message ?? "Upload failed");
@@ -43,6 +44,11 @@ export function FileField({
       setBusy(false);
       if (inputRef.current) inputRef.current.value = "";
     }
+  }
+
+  function handleRemove() {
+    onChange("");
+    onPersist?.("");
   }
 
   const isVideo =
