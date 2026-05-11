@@ -458,7 +458,7 @@ function SettingsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void 
     finally { setBusy(false); }
   }
 
-  async function handleUpload(field: "profile_picture_url" | "hero_background_url", url: string) {
+  async function handlePersistField(field: "profile_picture_url" | "hero_background_url", url: string) {
     const next = { ...form, [field]: url };
     setForm(next);
     try {
