@@ -72,7 +72,7 @@ export function FileField({
           {busy ? "Uploading…" : value ? "Replace file" : "Upload from device"}
         </Button>
         {value && (
-          <Button type="button" variant="outline" size="sm" onClick={() => onChange("")}>
+          <Button type="button" variant="outline" size="sm" onClick={handleRemove}>
             <X className="mr-1 h-3 w-3" /> Remove
           </Button>
         )}
