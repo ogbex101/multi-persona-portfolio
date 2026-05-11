@@ -484,10 +484,10 @@ function SettingsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void 
           <Textarea rows={4} value={form.bio ?? ""} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
         </div>
         <div className="md:col-span-2">
-          <FileField label="Profile picture" value={form.profile_picture_url ?? ""} onChange={(v) => setForm({ ...form, profile_picture_url: v })} folder="profiles" accept="image/*" />
+          <FileField label="Profile picture" value={form.profile_picture_url ?? ""} onChange={(v) => handleUpload("profile_picture_url", v)} folder="profiles" accept="image/*" helperText="Auto-saves to your homepage on upload." />
         </div>
         <div className="md:col-span-2">
-          <FileField label="Hero background image" value={form.hero_background_url ?? ""} onChange={(v) => setForm({ ...form, hero_background_url: v })} folder="hero" accept="image/*" />
+          <FileField label="Hero background image" value={form.hero_background_url ?? ""} onChange={(v) => handleUpload("hero_background_url", v)} folder="hero" accept="image/*" helperText="Auto-saves to your homepage on upload." />
         </div>
         <div><Label>Projects Count</Label><Input type="number" value={form.projects_count ?? 0} onChange={(e) => setForm({ ...form, projects_count: e.target.value })} /></div>
         <div><Label>Happy Clients</Label><Input type="number" value={form.happy_clients ?? 0} onChange={(e) => setForm({ ...form, happy_clients: e.target.value })} /></div>
