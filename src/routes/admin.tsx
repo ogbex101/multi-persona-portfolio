@@ -131,10 +131,34 @@ function NotAdminScreen() {
   );
 }
 
+type SectionId =
+  | "overview" | "meta" | "identity" | "theme" | "story" | "limits"
+  | "social" | "skills" | "certifications" | "services" | "projects"
+  | "testimonials" | "logos" | "email_designs";
+
+const SECTIONS: { id: SectionId; label: string; icon: any; emailOnly?: boolean }[] = [
+  { id: "overview", label: "Overview", icon: Layers },
+  { id: "meta", label: "Niche metadata", icon: Settings2 },
+  { id: "identity", label: "Identity & Contact", icon: User },
+  { id: "theme", label: "Theme & Styling", icon: Palette },
+  { id: "story", label: "My Story", icon: BookOpen },
+  { id: "limits", label: "Homepage limits", icon: Sliders },
+  { id: "social", label: "Social links", icon: Share2 },
+  { id: "skills", label: "Skills", icon: Sparkles },
+  { id: "certifications", label: "Certifications", icon: Award },
+  { id: "services", label: "Services", icon: Briefcase },
+  { id: "projects", label: "Projects", icon: FolderKanban },
+  { id: "testimonials", label: "Testimonials", icon: MessageSquareQuote },
+  { id: "logos", label: "Brand logos", icon: ImageIcon },
+  { id: "email_designs", label: "Email designs", icon: Mail, emailOnly: true },
+];
+
 function Dashboard() {
   const navigate = useNavigate();
   const { data: niches = [] } = useQuery(allNichesQuery());
   const [activeSlug, setActiveSlug] = useState<string>("email-marketer");
+  const [section, setSection] = useState<SectionId>("overview");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
     if (niches.length && !niches.some((n) => n.slug === activeSlug)) {
@@ -142,17 +166,24 @@ function Dashboard() {
     }
   }, [niches, activeSlug]);
 
+  const visibleSections = SECTIONS.filter((s) => !s.emailOnly || activeSlug === "email-marketer");
+
   return (
     <div className="min-h-screen bg-surface">
       <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <div>
-            <div className="font-display text-lg font-bold">Admin Dashboard</div>
-            <div className="text-xs text-muted-foreground">Full management for every niche</div>
-          </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2">
-            <Select value={activeSlug} onValueChange={setActiveSlug}>
-              <SelectTrigger className="w-[240px]"><SelectValue /></SelectTrigger>
+            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileNavOpen((v) => !v)}>
+              <Menu className="h-5 w-5" />
+            </Button>
+            <div>
+              <div className="font-display text-lg font-bold leading-tight">Admin Dashboard</div>
+              <div className="text-xs text-muted-foreground">Full management for every niche</div>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Select value={activeSlug} onValueChange={(v) => { setActiveSlug(v); setSection("overview"); }}>
+              <SelectTrigger className="w-[220px]"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {niches.map((n) => <SelectItem key={n.id} value={n.slug}>{n.display_name}</SelectItem>)}
               </SelectContent>
@@ -167,15 +198,64 @@ function Dashboard() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">
-        <NewNicheCard onCreated={(slug) => setActiveSlug(slug)} />
-        <NicheEditor key={activeSlug} slug={activeSlug} onDeleted={() => setActiveSlug(niches[0]?.slug ?? "")} />
-      </main>
+      <div className="flex">
+        <aside
+          className={cn(
+            "w-64 shrink-0 border-r border-border bg-background",
+            "lg:sticky lg:top-[65px] lg:block lg:h-[calc(100vh-65px)] lg:overflow-y-auto",
+            mobileNavOpen ? "fixed inset-y-0 left-0 top-[65px] z-40 block overflow-y-auto" : "hidden",
+          )}
+        >
+          <nav className="space-y-1 p-3">
+            <div className="px-2 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sections</div>
+            {visibleSections.map((s) => {
+              const Icon = s.icon;
+              const active = section === s.id;
+              return (
+                <button
+                  key={s.id}
+                  onClick={() => { setSection(s.id); setMobileNavOpen(false); }}
+                  className={cn(
+                    "flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
+                    active
+                      ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                  )}
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{s.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </aside>
+
+        <main className="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl space-y-6">
+            <NicheEditor
+              key={activeSlug + section}
+              slug={activeSlug}
+              section={section}
+              onDeleted={() => { setActiveSlug(niches[0]?.slug ?? ""); setSection("overview"); }}
+              onSwitchSection={setSection}
+              onSwitchNiche={setActiveSlug}
+            />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
 
-function NicheEditor({ slug, onDeleted }: { slug: string; onDeleted: () => void }) {
+function NicheEditor({
+  slug, section, onDeleted, onSwitchSection, onSwitchNiche,
+}: {
+  slug: string;
+  section: SectionId;
+  onDeleted: () => void;
+  onSwitchSection: (s: SectionId) => void;
+  onSwitchNiche: (slug: string) => void;
+}) {
   const qc = useQueryClient();
   const { data: bundle, isLoading } = useQuery(nicheBundleQuery(slug));
   const limits = bundle?.limits ?? {};
@@ -185,26 +265,83 @@ function NicheEditor({ slug, onDeleted }: { slug: string; onDeleted: () => void 
   };
 
   if (isLoading || !bundle) return <div className="text-muted-foreground">Loading niche…</div>;
-
   const nicheId = bundle.niche.id;
 
+  switch (section) {
+    case "overview":
+      return <OverviewPanel bundle={bundle} onSwitchSection={onSwitchSection} onCreated={onSwitchNiche} />;
+    case "meta":
+      return <NicheMetaEditor niche={bundle.niche} onSaved={refresh} onDeleted={() => { onDeleted(); refresh(); }} />;
+    case "identity":
+      return <SettingsEditor bundle={bundle} onSaved={refresh} />;
+    case "theme":
+      return <ThemeEditor bundle={bundle} onSaved={refresh} />;
+    case "story":
+      return <StoryEditor bundle={bundle} onSaved={refresh} />;
+    case "limits":
+      return <LimitsEditor bundle={bundle} onSaved={refresh} />;
+    case "social":
+      return <SocialLinksSection nicheId={nicheId} rows={bundle.socialLinks} onChange={refresh} />;
+    case "skills":
+      return <SkillsSection nicheId={nicheId} rows={bundle.skills} onChange={refresh} />;
+    case "certifications":
+      return <CertificationsSection nicheId={nicheId} rows={bundle.certifications} onChange={refresh} />;
+    case "services":
+      return <ServicesSection nicheId={nicheId} rows={bundle.services} limit={limits.services ?? 6} onChange={refresh} />;
+    case "projects":
+      return <ProjectsSection nicheId={nicheId} rows={bundle.projects} limit={limits.projects ?? 6} onChange={refresh} />;
+    case "testimonials":
+      return <TestimonialsSection nicheId={nicheId} rows={bundle.testimonials} limit={limits.testimonials ?? 6} onChange={refresh} />;
+    case "logos":
+      return <BrandLogosSection nicheId={nicheId} rows={bundle.brandLogos} limit={limits.brand_logos ?? 8} onChange={refresh} />;
+    case "email_designs":
+      return <EmailDesignsSection nicheId={nicheId} rows={bundle.emailDesigns} limit={limits.email_designs ?? 6} onChange={refresh} />;
+    default:
+      return null;
+  }
+}
+
+function OverviewPanel({
+  bundle, onSwitchSection, onCreated,
+}: { bundle: any; onSwitchSection: (s: SectionId) => void; onCreated: (slug: string) => void }) {
+  const stats = [
+    { label: "Services", count: bundle.services.length, section: "services" as SectionId },
+    { label: "Projects", count: bundle.projects.length, section: "projects" as SectionId },
+    { label: "Testimonials", count: bundle.testimonials.length, section: "testimonials" as SectionId },
+    { label: "Brand logos", count: bundle.brandLogos.length, section: "logos" as SectionId },
+    { label: "Skills", count: bundle.skills.length, section: "skills" as SectionId },
+    { label: "Certifications", count: bundle.certifications.length, section: "certifications" as SectionId },
+    { label: "Social links", count: bundle.socialLinks.length, section: "social" as SectionId },
+  ];
   return (
-    <div className="space-y-8">
-      <NicheMetaEditor niche={bundle.niche} onSaved={refresh} onDeleted={() => { onDeleted(); refresh(); }} />
-      <SettingsEditor bundle={bundle} onSaved={refresh} />
-      <ThemeEditor bundle={bundle} onSaved={refresh} />
-      <StoryEditor bundle={bundle} onSaved={refresh} />
-      <LimitsEditor bundle={bundle} onSaved={refresh} />
-      <SocialLinksSection nicheId={nicheId} rows={bundle.socialLinks} onChange={refresh} />
-      <SkillsSection nicheId={nicheId} rows={bundle.skills} onChange={refresh} />
-      <CertificationsSection nicheId={nicheId} rows={bundle.certifications} onChange={refresh} />
-      <ServicesSection nicheId={nicheId} rows={bundle.services} limit={limits.services ?? 6} onChange={refresh} />
-      <ProjectsSection nicheId={nicheId} rows={bundle.projects} limit={limits.projects ?? 6} onChange={refresh} />
-      <TestimonialsSection nicheId={nicheId} rows={bundle.testimonials} limit={limits.testimonials ?? 6} onChange={refresh} />
-      <BrandLogosSection nicheId={nicheId} rows={bundle.brandLogos} limit={limits.brand_logos ?? 8} onChange={refresh} />
-      {slug === "email-marketer" && (
-        <EmailDesignsSection nicheId={nicheId} rows={bundle.emailDesigns} limit={limits.email_designs ?? 6} onChange={refresh} />
-      )}
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Layers className="h-4 w-4" /> {bundle.niche.display_name}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Pick a section from the sidebar to manage that part of this niche. All media fields support direct upload from your device.
+          </p>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {stats.map((s) => (
+          <button
+            key={s.section}
+            onClick={() => onSwitchSection(s.section)}
+            className="rounded-lg border border-border bg-card p-4 text-left transition-smooth hover:border-primary hover:shadow-sm"
+          >
+            <div className="text-xs uppercase tracking-wider text-muted-foreground">{s.label}</div>
+            <div className="mt-1 font-display text-2xl font-bold">{s.count}</div>
+          </button>
+        ))}
+      </div>
+
+      <NewNicheCard onCreated={onCreated} />
     </div>
   );
 }
