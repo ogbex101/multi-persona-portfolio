@@ -10,6 +10,8 @@ type Props = {
   label: string;
   value: string;
   onChange: (url: string) => void;
+  /** Called only when a file upload completes or the value is cleared. Use for auto-persist. */
+  onPersist?: (url: string) => void;
   accept?: string;
   folder?: string;
   preview?: "image" | "video" | "auto" | "none";
@@ -20,6 +22,7 @@ export function FileField({
   label,
   value,
   onChange,
+  onPersist,
   accept = "image/*",
   folder = "uploads",
   preview = "auto",
