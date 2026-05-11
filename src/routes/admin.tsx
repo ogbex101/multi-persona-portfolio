@@ -24,8 +24,11 @@ import {
 import { toast } from "sonner";
 import {
   Star, LogOut, ExternalLink, ShieldCheck, Plus, Pencil, Trash2, Settings2,
+  User, Palette, BookOpen, Sliders, Share2, Award, Briefcase, FolderKanban,
+  MessageSquareQuote, Image as ImageIcon, Mail, Sparkles, Layers, Menu,
 } from "lucide-react";
 import { FileField } from "@/components/admin/FileField";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin")({
   component: AdminPage,
