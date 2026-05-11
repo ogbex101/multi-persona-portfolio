@@ -52,26 +52,28 @@ export function FileField({
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <Button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          disabled={busy}
+          className="gap-2"
+        >
+          <Upload className="h-4 w-4" />
+          {busy ? "Uploading…" : value ? "Replace file" : "Upload from device"}
+        </Button>
+        {value && (
+          <Button type="button" variant="outline" size="sm" onClick={() => onChange("")}>
+            <X className="mr-1 h-3 w-3" /> Remove
+          </Button>
+        )}
+        <span className="text-xs text-muted-foreground">or paste a URL</span>
         <Input
           value={value ?? ""}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Paste a URL or upload below"
+          placeholder="https://…"
+          className="h-8 max-w-xs flex-1"
         />
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => inputRef.current?.click()}
-          disabled={busy}
-        >
-          <Upload className="mr-1 h-4 w-4" />
-          {busy ? "…" : "Upload"}
-        </Button>
-        {value && (
-          <Button type="button" variant="ghost" size="icon" onClick={() => onChange("")}>
-            <X className="h-4 w-4" />
-          </Button>
-        )}
       </div>
       <input
         ref={inputRef}
