@@ -35,20 +35,21 @@
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
 
-  --font-sans: var(--font-family, 'Inter'), ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Space Grotesk', var(--font-family, 'Inter'), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-family, "Inter"), ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    "Space Grotesk", var(--font-family, "Inter"), ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
   --radius: 0.875rem;
 
   /* Niche-driven brand vars (overridden by ThemeProvider) */
-  --brand-primary: 37 99 235;       /* rgb of #2563EB */
-  --brand-secondary: 15 23 42;      /* #0F172A */
-  --brand-accent: 245 158 11;       /* #F59E0B */
-  --brand-primary-hex: #2563EB;
-  --brand-accent-hex: #F59E0B;
-  --font-family: 'Inter';
+  --brand-primary: 37 99 235; /* rgb of #2563EB */
+  --brand-secondary: 15 23 42; /* #0F172A */
+  --brand-accent: 245 158 11; /* #F59E0B */
+  --brand-primary-hex: #2563eb;
+  --brand-accent-hex: #f59e0b;
+  --font-family: "Inter";
 
   /* Light surface system tinted by brand */
   --background: oklch(0.99 0.005 240);
@@ -80,10 +81,24 @@
   --input: oklch(0.94 0.01 240);
   --ring: rgb(var(--brand-primary));
 
-  --gradient-hero: radial-gradient(ellipse at top left, color-mix(in oklab, rgb(var(--brand-primary)) 18%, transparent), transparent 60%),
-                   radial-gradient(ellipse at bottom right, color-mix(in oklab, rgb(var(--brand-accent)) 14%, transparent), transparent 55%);
-  --gradient-brand: linear-gradient(135deg, rgb(var(--brand-primary)), color-mix(in oklab, rgb(var(--brand-primary)) 50%, rgb(var(--brand-accent))));
-  --shadow-elegant: 0 10px 40px -15px color-mix(in oklab, rgb(var(--brand-primary)) 35%, transparent);
+  --gradient-hero:
+    radial-gradient(
+      ellipse at top left,
+      color-mix(in oklab, rgb(var(--brand-primary)) 18%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      color-mix(in oklab, rgb(var(--brand-accent)) 14%, transparent),
+      transparent 55%
+    );
+  --gradient-brand: linear-gradient(
+    135deg,
+    rgb(var(--brand-primary)),
+    color-mix(in oklab, rgb(var(--brand-primary)) 50%, rgb(var(--brand-accent)))
+  );
+  --shadow-elegant: 0 10px 40px -15px
+    color-mix(in oklab, rgb(var(--brand-primary)) 35%, transparent);
   --shadow-soft: 0 4px 20px -6px color-mix(in oklab, rgb(var(--brand-secondary)) 18%, transparent);
   --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -92,7 +107,7 @@
   --background: oklch(0.13 0.025 260);
   --foreground: oklch(0.97 0.005 240);
   --surface: oklch(0.17 0.03 260);
-  --surface-elevated: oklch(0.20 0.035 262);
+  --surface-elevated: oklch(0.2 0.035 262);
   --card: oklch(0.18 0.03 260);
   --card-foreground: oklch(0.97 0.005 240);
   --popover: oklch(0.18 0.03 260);
@@ -120,23 +135,43 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * {
+    border-color: var(--color-border);
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
 }
 
 @layer utilities {
-  .text-balance { text-wrap: balance; }
-  .bg-gradient-hero { background-image: var(--gradient-hero); }
-  .bg-gradient-brand { background-image: var(--gradient-brand); }
-  .shadow-elegant { box-shadow: var(--shadow-elegant); }
-  .shadow-soft { box-shadow: var(--shadow-soft); }
-  .transition-smooth { transition: all 400ms var(--transition-smooth); }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
+  .bg-gradient-brand {
+    background-image: var(--gradient-brand);
+  }
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .transition-smooth {
+    transition: all 400ms var(--transition-smooth);
+  }
 
   .glass {
     background: color-mix(in oklab, var(--card) 70%, transparent);
@@ -149,25 +184,47 @@
     transform: translateY(20px);
     animation: reveal 700ms var(--transition-smooth) forwards;
   }
-  .reveal-delay-1 { animation-delay: 100ms; }
-  .reveal-delay-2 { animation-delay: 200ms; }
-  .reveal-delay-3 { animation-delay: 300ms; }
-  .reveal-delay-4 { animation-delay: 400ms; }
+  .reveal-delay-1 {
+    animation-delay: 100ms;
+  }
+  .reveal-delay-2 {
+    animation-delay: 200ms;
+  }
+  .reveal-delay-3 {
+    animation-delay: 300ms;
+  }
+  .reveal-delay-4 {
+    animation-delay: 400ms;
+  }
 }
 
 @keyframes reveal {
-  to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
 }
-.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
 
 @keyframes shimmer {
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
 }
 
 /* Page transition */
@@ -175,6 +232,204 @@
   animation: pageEnter 500ms var(--transition-smooth);
 }
 @keyframes pageEnter {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   Scroll-reveal entrances (driven by IntersectionObserver via
+   the <Reveal> component, which toggles `data-shown`).
+   Multiple variants so each section animates differently.
+   ============================================================ */
+@layer utilities {
+  .sr {
+    opacity: 0;
+    transition:
+      opacity 700ms var(--transition-smooth),
+      transform 800ms var(--transition-smooth),
+      filter 800ms var(--transition-smooth);
+    will-change: opacity, transform;
+  }
+  .sr[data-shown="true"] {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .sr-up {
+    transform: translateY(40px);
+  }
+  .sr-down {
+    transform: translateY(-40px);
+  }
+  .sr-left {
+    transform: translateX(-56px);
+  }
+  .sr-right {
+    transform: translateX(56px);
+  }
+  .sr-zoom {
+    transform: scale(0.9);
+  }
+  .sr-blur {
+    filter: blur(14px);
+    transform: translateY(24px);
+  }
+  .sr-rotate {
+    transform: perspective(1000px) rotateX(12deg) translateY(40px);
+    transform-origin: top center;
+  }
+  .sr-flip {
+    transform: perspective(1200px) rotateY(-18deg) translateX(40px);
+  }
+}
+
+/* ============================================================
+   Gliding marquee (continuous, seamless). The track is rendered
+   twice; we translate by -50% so the loop is invisible.
+   Controlled via CSS vars set inline by the <Marquee> component.
+   ============================================================ */
+.glide-track {
+  display: flex;
+  width: max-content;
+  gap: var(--glide-gap, 1.25rem);
+  animation: glide var(--glide-duration, 40s) linear infinite;
+  animation-direction: var(--glide-direction, normal);
+}
+.glide-track[data-paused="true"] {
+  animation-play-state: paused;
+}
+.glide-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+@keyframes glide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ============================================================
+   3D hero scene utilities
+   ============================================================ */
+.scene-3d {
+  perspective: 1200px;
+  perspective-origin: 50% 40%;
+  transform-style: preserve-3d;
+}
+.tilt-3d {
+  transform-style: preserve-3d;
+  transition: transform 200ms var(--transition-smooth);
+}
+.layer-3d {
+  transform: translateZ(var(--z, 0));
+  will-change: transform;
+}
+
+@keyframes orbFloatA {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(18px, -26px, 0) scale(1.06);
+  }
+}
+@keyframes orbFloatB {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-22px, 18px, 0) scale(0.94);
+  }
+}
+@keyframes spinSlow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes meshShift {
+  0%,
+  100% {
+    background-position:
+      0% 50%,
+      100% 50%,
+      50% 0%;
+  }
+  50% {
+    background-position:
+      100% 50%,
+      0% 50%,
+      50% 100%;
+  }
+}
+.animate-orb-a {
+  animation: orbFloatA 9s ease-in-out infinite;
+}
+.animate-orb-b {
+  animation: orbFloatB 11s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: spinSlow 26s linear infinite;
+}
+.animate-mesh {
+  background-size:
+    180% 180%,
+    180% 180%,
+    180% 180%;
+  animation: meshShift 18s ease-in-out infinite;
+}
+
+/* Animated brand-gradient text */
+.text-gradient-brand {
+  background-image: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Marquee row used inside the 3D hero (tech badges) */
+@keyframes badgeGlide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.badge-glide {
+  display: flex;
+  width: max-content;
+  gap: 0.75rem;
+  animation: badgeGlide 22s linear infinite;
+}
+.badge-glide:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sr {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none;
+  }
+  .glide-track,
+  .badge-glide,
+  .animate-orb-a,
+  .animate-orb-b,
+  .animate-spin-slow,
+  .animate-mesh,
+  .animate-float {
+    animation: none !important;
+  }
 }

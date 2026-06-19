@@ -1,15 +1,24 @@
-import { Link, useNavigate, useParams } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Menu, X, Sparkles } from "lucide-react";
-import { allNichesQuery } from "@/lib/niche-queries";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+const PRIMARY_SLUG = "fullstack-developer";
+
+const SECTIONS = [
+  { id: "about", label: "About" },
+  { id: "story", label: "My Story" },
+  { id: "services", label: "Services" },
+  { id: "tools", label: "Tools" },
+  { id: "projects", label: "Work" },
+  { id: "testimonials", label: "Praise" },
+  { id: "contact", label: "Contact" },
+];
+
 export function NicheNav() {
   const { slug } = useParams({ strict: false }) as { slug?: string };
-  const navigate = useNavigate();
-  const { data: niches = [] } = useQuery(allNichesQuery());
+  const current = slug ?? PRIMARY_SLUG;
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -20,19 +29,19 @@ export function NicheNav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const active = niches.find((n) => n.slug === slug);
+  const hashHref = (id: string) => `/niche/${current}#${id}`;
 
   return (
     <header
       className={cn(
         "sticky top-0 z-50 w-full transition-smooth",
-        scrolled ? "glass border-b border-border/40 shadow-soft" : "bg-transparent"
+        scrolled ? "glass border-b border-border/40 shadow-soft" : "bg-transparent",
       )}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link
           to="/niche/$slug"
-          params={{ slug: slug ?? "email-marketer" }}
+          params={{ slug: current }}
           className="flex items-center gap-2 font-display text-base font-bold tracking-tight"
         >
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-brand text-primary-foreground shadow-elegant">
@@ -42,25 +51,20 @@ export function NicheNav() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {niches.map((n) => (
-            <button
-              key={n.id}
-              onClick={() => navigate({ to: "/niche/$slug", params: { slug: n.slug } })}
-              className={cn(
-                "rounded-full px-3.5 py-1.5 text-sm font-medium transition-smooth",
-                n.slug === slug
-                  ? "bg-gradient-brand text-primary-foreground shadow-elegant"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
+          {SECTIONS.map((sec) => (
+            <a
+              key={sec.id}
+              href={hashHref(sec.id)}
+              className="rounded-full px-3.5 py-1.5 text-sm font-medium text-muted-foreground transition-smooth hover:bg-muted hover:text-foreground"
             >
-              {n.display_name}
-            </button>
+              {sec.label}
+            </a>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
           <Button asChild variant="default" size="sm" className="hidden sm:inline-flex">
-            <a href="#contact">Hire Me</a>
+            <a href={hashHref("contact")}>Hire Me</a>
           </Button>
           <button
             onClick={() => setMobileOpen((v) => !v)}
@@ -75,24 +79,21 @@ export function NicheNav() {
       {mobileOpen && (
         <div className="border-t border-border bg-background md:hidden">
           <nav className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3">
-            {niches.map((n) => (
-              <button
-                key={n.id}
-                onClick={() => {
-                  setMobileOpen(false);
-                  navigate({ to: "/niche/$slug", params: { slug: n.slug } });
-                }}
-                className={cn(
-                  "rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth",
-                  n.slug === slug ? "bg-gradient-brand text-primary-foreground" : "hover:bg-muted"
-                )}
+            {SECTIONS.map((sec) => (
+              <a
+                key={sec.id}
+                href={hashHref(sec.id)}
+                onClick={() => setMobileOpen(false)}
+                className="rounded-lg px-3 py-2 text-left text-sm font-medium transition-smooth hover:bg-muted"
               >
-                {n.display_name}
-              </button>
+                {sec.label}
+              </a>
             ))}
-            {active && (
-              <Button asChild className="mt-2"><a href="#contact" onClick={() => setMobileOpen(false)}>Hire Me</a></Button>
-            )}
+            <Button asChild className="mt-2">
+              <a href={hashHref("contact")} onClick={() => setMobileOpen(false)}>
+                Hire Me
+              </a>
+            </Button>
           </nav>
         </div>
       )}

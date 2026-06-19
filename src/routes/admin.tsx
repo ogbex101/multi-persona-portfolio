@@ -10,22 +10,59 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import {
-  Star, LogOut, ExternalLink, ShieldCheck, Plus, Pencil, Trash2, Settings2,
-  User, Palette, BookOpen, Sliders, Share2, Award, Briefcase, FolderKanban,
-  MessageSquareQuote, Image as ImageIcon, Mail, Sparkles, Layers, Menu,
+  Star,
+  LogOut,
+  ExternalLink,
+  ShieldCheck,
+  Plus,
+  Pencil,
+  Trash2,
+  Settings2,
+  User,
+  Palette,
+  BookOpen,
+  Sliders,
+  Share2,
+  Award,
+  Briefcase,
+  FolderKanban,
+  MessageSquareQuote,
+  Image as ImageIcon,
+  Mail,
+  Sparkles,
+  Layers,
+  Menu,
+  Users,
+  UserPlus,
+  ShieldX,
 } from "lucide-react";
 import { FileField } from "@/components/admin/FileField";
 import { cn } from "@/lib/utils";
@@ -38,7 +75,9 @@ function AdminPage() {
   const { session, isAdmin, loading } = useAuth();
 
   if (loading) {
-    return <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
+    return (
+      <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>
+    );
   }
   if (!session) return <LoginScreen />;
   if (!isAdmin) return <NotAdminScreen />;
@@ -57,7 +96,8 @@ function LoginScreen() {
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
-          email, password,
+          email,
+          password,
           options: { emailRedirectTo: `${window.location.origin}/admin` },
         });
         if (error) throw error;
@@ -82,17 +122,34 @@ function LoginScreen() {
           <div className="mb-2 grid h-10 w-10 place-items-center rounded-xl bg-gradient-brand text-primary-foreground">
             <ShieldCheck className="h-5 w-5" />
           </div>
-          <CardTitle className="font-display">Admin {mode === "signin" ? "Sign In" : "Sign Up"}</CardTitle>
+          <CardTitle className="font-display">
+            Admin {mode === "signin" ? "Sign In" : "Sign Up"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={submit} className="space-y-4">
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
             </div>
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} autoComplete={mode === "signin" ? "current-password" : "new-password"} />
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              />
             </div>
             <Button type="submit" disabled={busy} className="w-full">
               {busy ? "Working…" : mode === "signin" ? "Sign In" : "Create Account"}
@@ -104,7 +161,10 @@ function LoginScreen() {
             >
               {mode === "signin" ? "Need an account? Sign up" : "Have an account? Sign in"}
             </button>
-            <Link to="/" className="block text-center text-xs text-muted-foreground hover:underline">
+            <Link
+              to="/"
+              className="block text-center text-xs text-muted-foreground hover:underline"
+            >
               ← Back to site
             </Link>
           </form>
@@ -119,12 +179,16 @@ function NotAdminScreen() {
   return (
     <div className="grid min-h-screen place-items-center px-4">
       <Card className="max-w-md text-center">
-        <CardHeader><CardTitle>Not an admin</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Not an admin</CardTitle>
+        </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             Your account ({user?.email}) needs the admin role.
           </p>
-          <Button variant="outline" onClick={() => supabase.auth.signOut()}>Sign out</Button>
+          <Button variant="outline" onClick={() => supabase.auth.signOut()}>
+            Sign out
+          </Button>
         </CardContent>
       </Card>
     </div>
@@ -132,12 +196,31 @@ function NotAdminScreen() {
 }
 
 type SectionId =
-  | "overview" | "meta" | "identity" | "theme" | "story" | "limits"
-  | "social" | "skills" | "certifications" | "services" | "projects"
-  | "testimonials" | "logos" | "email_designs";
+  | "overview"
+  | "team"
+  | "meta"
+  | "identity"
+  | "theme"
+  | "story"
+  | "limits"
+  | "social"
+  | "skills"
+  | "certifications"
+  | "services"
+  | "projects"
+  | "testimonials"
+  | "logos"
+  | "email_designs";
 
-const SECTIONS: { id: SectionId; label: string; icon: any; emailOnly?: boolean }[] = [
+const SECTIONS: {
+  id: SectionId;
+  label: string;
+  icon: any;
+  emailOnly?: boolean;
+  global?: boolean;
+}[] = [
   { id: "overview", label: "Overview", icon: Layers },
+  { id: "team", label: "Team / Users", icon: Users, global: true },
   { id: "meta", label: "Niche metadata", icon: Settings2 },
   { id: "identity", label: "Identity & Contact", icon: User },
   { id: "theme", label: "Theme & Styling", icon: Palette },
@@ -156,7 +239,7 @@ const SECTIONS: { id: SectionId; label: string; icon: any; emailOnly?: boolean }
 function Dashboard() {
   const navigate = useNavigate();
   const { data: niches = [] } = useQuery(allNichesQuery());
-  const [activeSlug, setActiveSlug] = useState<string>("email-marketer");
+  const [activeSlug, setActiveSlug] = useState<string>("fullstack-developer");
   const [section, setSection] = useState<SectionId>("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -173,7 +256,12 @@ function Dashboard() {
       <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileNavOpen((v) => !v)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setMobileNavOpen((v) => !v)}
+            >
               <Menu className="h-5 w-5" />
             </Button>
             <div>
@@ -182,16 +270,39 @@ function Dashboard() {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Select value={activeSlug} onValueChange={(v) => { setActiveSlug(v); setSection("overview"); }}>
-              <SelectTrigger className="w-[220px]"><SelectValue /></SelectTrigger>
+            <Select
+              value={activeSlug}
+              onValueChange={(v) => {
+                setActiveSlug(v);
+                setSection("overview");
+              }}
+            >
+              <SelectTrigger className="w-[220px]">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
-                {niches.map((n) => <SelectItem key={n.id} value={n.slug}>{n.display_name}</SelectItem>)}
+                {niches.map((n) => (
+                  <SelectItem key={n.id} value={n.slug}>
+                    {n.display_name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm" onClick={() => window.open(`/niche/${activeSlug}`, "_blank")}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.open(`/niche/${activeSlug}`, "_blank")}
+            >
               <ExternalLink className="mr-1 h-3 w-3" /> Preview
             </Button>
-            <Button variant="ghost" size="sm" onClick={async () => { await supabase.auth.signOut(); navigate({ to: "/" }); }}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate({ to: "/" });
+              }}
+            >
               <LogOut className="mr-1 h-3 w-3" /> Sign out
             </Button>
           </div>
@@ -199,22 +310,36 @@ function Dashboard() {
       </header>
 
       <div className="flex">
+        {mobileNavOpen && (
+          <button
+            aria-label="Close menu"
+            onClick={() => setMobileNavOpen(false)}
+            className="fixed inset-0 top-[65px] z-30 bg-black/40 lg:hidden"
+          />
+        )}
         <aside
           className={cn(
             "w-64 shrink-0 border-r border-border bg-background",
             "lg:sticky lg:top-[65px] lg:block lg:h-[calc(100vh-65px)] lg:overflow-y-auto",
-            mobileNavOpen ? "fixed inset-y-0 left-0 top-[65px] z-40 block overflow-y-auto" : "hidden",
+            mobileNavOpen
+              ? "fixed inset-y-0 left-0 top-[65px] z-40 block overflow-y-auto"
+              : "hidden",
           )}
         >
           <nav className="space-y-1 p-3">
-            <div className="px-2 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Sections</div>
+            <div className="px-2 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Sections
+            </div>
             {visibleSections.map((s) => {
               const Icon = s.icon;
               const active = section === s.id;
               return (
                 <button
                   key={s.id}
-                  onClick={() => { setSection(s.id); setMobileNavOpen(false); }}
+                  onClick={() => {
+                    setSection(s.id);
+                    setMobileNavOpen(false);
+                  }}
                   className={cn(
                     "flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                     active
@@ -232,14 +357,21 @@ function Dashboard() {
 
         <main className="min-w-0 flex-1 px-4 py-8 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-5xl space-y-6">
-            <NicheEditor
-              key={activeSlug + section}
-              slug={activeSlug}
-              section={section}
-              onDeleted={() => { setActiveSlug(niches[0]?.slug ?? ""); setSection("overview"); }}
-              onSwitchSection={setSection}
-              onSwitchNiche={setActiveSlug}
-            />
+            {section === "team" ? (
+              <TeamSection />
+            ) : (
+              <NicheEditor
+                key={activeSlug + section}
+                slug={activeSlug}
+                section={section}
+                onDeleted={() => {
+                  setActiveSlug(niches[0]?.slug ?? "");
+                  setSection("overview");
+                }}
+                onSwitchSection={setSection}
+                onSwitchNiche={setActiveSlug}
+              />
+            )}
           </div>
         </main>
       </div>
@@ -248,7 +380,11 @@ function Dashboard() {
 }
 
 function NicheEditor({
-  slug, section, onDeleted, onSwitchSection, onSwitchNiche,
+  slug,
+  section,
+  onDeleted,
+  onSwitchSection,
+  onSwitchNiche,
 }: {
   slug: string;
   section: SectionId;
@@ -269,9 +405,24 @@ function NicheEditor({
 
   switch (section) {
     case "overview":
-      return <OverviewPanel bundle={bundle} onSwitchSection={onSwitchSection} onCreated={onSwitchNiche} />;
+      return (
+        <OverviewPanel
+          bundle={bundle}
+          onSwitchSection={onSwitchSection}
+          onCreated={onSwitchNiche}
+        />
+      );
     case "meta":
-      return <NicheMetaEditor niche={bundle.niche} onSaved={refresh} onDeleted={() => { onDeleted(); refresh(); }} />;
+      return (
+        <NicheMetaEditor
+          niche={bundle.niche}
+          onSaved={refresh}
+          onDeleted={() => {
+            onDeleted();
+            refresh();
+          }}
+        />
+      );
     case "identity":
       return <SettingsEditor bundle={bundle} onSaved={refresh} />;
     case "theme":
@@ -285,32 +436,83 @@ function NicheEditor({
     case "skills":
       return <SkillsSection nicheId={nicheId} rows={bundle.skills} onChange={refresh} />;
     case "certifications":
-      return <CertificationsSection nicheId={nicheId} rows={bundle.certifications} onChange={refresh} />;
+      return (
+        <CertificationsSection nicheId={nicheId} rows={bundle.certifications} onChange={refresh} />
+      );
     case "services":
-      return <ServicesSection nicheId={nicheId} rows={bundle.services} limit={limits.services ?? 6} onChange={refresh} />;
+      return (
+        <ServicesSection
+          nicheId={nicheId}
+          rows={bundle.services}
+          limit={limits.services ?? 6}
+          onChange={refresh}
+        />
+      );
     case "projects":
-      return <ProjectsSection nicheId={nicheId} rows={bundle.projects} limit={limits.projects ?? 6} onChange={refresh} />;
+      return (
+        <ProjectsSection
+          nicheId={nicheId}
+          rows={bundle.projects}
+          limit={limits.projects ?? 6}
+          onChange={refresh}
+        />
+      );
     case "testimonials":
-      return <TestimonialsSection nicheId={nicheId} rows={bundle.testimonials} limit={limits.testimonials ?? 6} onChange={refresh} />;
+      return (
+        <TestimonialsSection
+          nicheId={nicheId}
+          rows={bundle.testimonials}
+          limit={limits.testimonials ?? 6}
+          onChange={refresh}
+        />
+      );
     case "logos":
-      return <BrandLogosSection nicheId={nicheId} rows={bundle.brandLogos} limit={limits.brand_logos ?? 8} onChange={refresh} />;
+      return (
+        <BrandLogosSection
+          nicheId={nicheId}
+          rows={bundle.brandLogos}
+          limit={limits.brand_logos ?? 8}
+          onChange={refresh}
+        />
+      );
     case "email_designs":
-      return <EmailDesignsSection nicheId={nicheId} rows={bundle.emailDesigns} limit={limits.email_designs ?? 6} onChange={refresh} />;
+      return (
+        <EmailDesignsSection
+          nicheId={nicheId}
+          rows={bundle.emailDesigns}
+          limit={limits.email_designs ?? 6}
+          onChange={refresh}
+        />
+      );
     default:
       return null;
   }
 }
 
 function OverviewPanel({
-  bundle, onSwitchSection, onCreated,
-}: { bundle: any; onSwitchSection: (s: SectionId) => void; onCreated: (slug: string) => void }) {
+  bundle,
+  onSwitchSection,
+  onCreated,
+}: {
+  bundle: any;
+  onSwitchSection: (s: SectionId) => void;
+  onCreated: (slug: string) => void;
+}) {
   const stats = [
     { label: "Services", count: bundle.services.length, section: "services" as SectionId },
     { label: "Projects", count: bundle.projects.length, section: "projects" as SectionId },
-    { label: "Testimonials", count: bundle.testimonials.length, section: "testimonials" as SectionId },
+    {
+      label: "Testimonials",
+      count: bundle.testimonials.length,
+      section: "testimonials" as SectionId,
+    },
     { label: "Brand logos", count: bundle.brandLogos.length, section: "logos" as SectionId },
     { label: "Skills", count: bundle.skills.length, section: "skills" as SectionId },
-    { label: "Certifications", count: bundle.certifications.length, section: "certifications" as SectionId },
+    {
+      label: "Certifications",
+      count: bundle.certifications.length,
+      section: "certifications" as SectionId,
+    },
     { label: "Social links", count: bundle.socialLinks.length, section: "social" as SectionId },
   ];
   return (
@@ -323,7 +525,8 @@ function OverviewPanel({
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            Pick a section from the sidebar to manage that part of this niche. All media fields support direct upload from your device.
+            Pick a section from the sidebar to manage that part of this niche. All media fields
+            support direct upload from your device.
           </p>
         </CardContent>
       </Card>
@@ -348,7 +551,15 @@ function OverviewPanel({
 
 /* ------------------------- META / SETTINGS / THEME / STORY ------------------------- */
 
-function NicheMetaEditor({ niche, onSaved, onDeleted }: { niche: any; onSaved: () => void; onDeleted: () => void }) {
+function NicheMetaEditor({
+  niche,
+  onSaved,
+  onDeleted,
+}: {
+  niche: any;
+  onSaved: () => void;
+  onDeleted: () => void;
+}) {
   const [displayName, setDisplayName] = useState(niche.display_name);
   const [slug, setSlug] = useState(niche.slug);
   const [sortOrder, setSortOrder] = useState<number>(niche.sort_order ?? 0);
@@ -358,14 +569,23 @@ function NicheMetaEditor({ niche, onSaved, onDeleted }: { niche: any; onSaved: (
   async function save() {
     setBusy(true);
     try {
-      const { error } = await supabase.from("niches").update({
-        display_name: displayName, slug: toSlug(slug), sort_order: Number(sortOrder) || 0, is_active: isActive,
-      }).eq("id", niche.id);
+      const { error } = await supabase
+        .from("niches")
+        .update({
+          display_name: displayName,
+          slug: toSlug(slug),
+          sort_order: Number(sortOrder) || 0,
+          is_active: isActive,
+        })
+        .eq("id", niche.id);
       if (error) throw error;
       toast.success("Niche updated");
       onSaved();
-    } catch (e: any) { toast.error(e.message); }
-    finally { setBusy(false); }
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function destroy() {
@@ -373,35 +593,54 @@ function NicheMetaEditor({ niche, onSaved, onDeleted }: { niche: any; onSaved: (
     try {
       // Cascade delete dependents (no FKs configured)
       const tables = [
-        "niche_settings", "niche_stories", "services", "skills", "projects",
-        "certifications", "testimonials", "brand_logos", "social_links",
-        "niche_homepage_limits", "email_designs",
+        "niche_settings",
+        "niche_stories",
+        "services",
+        "skills",
+        "projects",
+        "certifications",
+        "testimonials",
+        "brand_logos",
+        "social_links",
+        "niche_homepage_limits",
+        "email_designs",
       ];
       for (const t of tables) {
-        await supabase.from(t as any).delete().eq("niche_id", niche.id);
+        await supabase
+          .from(t as any)
+          .delete()
+          .eq("niche_id", niche.id);
       }
       const { error } = await supabase.from("niches").delete().eq("id", niche.id);
       if (error) throw error;
       toast.success("Niche deleted");
       onDeleted();
-    } catch (e: any) { toast.error(e.message); }
-    finally { setBusy(false); }
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span className="flex items-center gap-2"><Settings2 className="h-4 w-4" /> Niche metadata</span>
+          <span className="flex items-center gap-2">
+            <Settings2 className="h-4 w-4" /> Niche metadata
+          </span>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm"><Trash2 className="mr-1 h-3 w-3" /> Delete niche</Button>
+              <Button variant="destructive" size="sm">
+                <Trash2 className="mr-1 h-3 w-3" /> Delete niche
+              </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete this niche?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This permanently removes the niche and all its content (services, projects, testimonials, etc.).
+                  This permanently removes the niche and all its content (services, projects,
+                  testimonials, etc.).
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -413,30 +652,67 @@ function NicheMetaEditor({ niche, onSaved, onDeleted }: { niche: any; onSaved: (
         </CardTitle>
       </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-2">
-        <div><Label>Display name</Label><Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} /></div>
-        <div><Label>URL slug</Label><Input value={slug} onChange={(e) => setSlug(e.target.value)} /></div>
-        <div><Label>Sort order</Label><Input type="number" value={sortOrder} onChange={(e) => setSortOrder(Number(e.target.value))} /></div>
-        <div className="flex items-end gap-3"><Switch checked={isActive} onCheckedChange={setIsActive} /><Label>Active (visible on site)</Label></div>
-        <div className="md:col-span-2"><Button onClick={save} disabled={busy}>{busy ? "Saving…" : "Save niche"}</Button></div>
+        <div>
+          <Label>Display name</Label>
+          <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+        </div>
+        <div>
+          <Label>URL slug</Label>
+          <Input value={slug} onChange={(e) => setSlug(e.target.value)} />
+        </div>
+        <div>
+          <Label>Sort order</Label>
+          <Input
+            type="number"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(Number(e.target.value))}
+          />
+        </div>
+        <div className="flex items-end gap-3">
+          <Switch checked={isActive} onCheckedChange={setIsActive} />
+          <Label>Active (visible on site)</Label>
+        </div>
+        <div className="md:col-span-2">
+          <Button onClick={save} disabled={busy}>
+            {busy ? "Saving…" : "Save niche"}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
 }
 
 function SettingsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void }) {
-  const [form, setForm] = useState(() => ({ ...(bundle.settings ?? { niche_id: bundle.niche.id }) }));
+  const [form, setForm] = useState(() => ({
+    ...(bundle.settings ?? { niche_id: bundle.niche.id }),
+  }));
   const [busy, setBusy] = useState(false);
-  const fields = useMemo(() => ([
-    ["full_name", "Full Name"], ["title", "Title"], ["hero_tagline", "Hero Tagline"],
-    ["email", "Email"], ["phone", "Phone"], ["whatsapp", "WhatsApp"], ["location", "Location"],
-  ] as const), []);
+  const fields = useMemo(
+    () =>
+      [
+        ["full_name", "Full Name"],
+        ["title", "Title"],
+        ["hero_tagline", "Hero Tagline"],
+        ["email", "Email"],
+        ["phone", "Phone"],
+        ["whatsapp", "WhatsApp"],
+        ["location", "Location"],
+      ] as const,
+    [],
+  );
 
   async function persist(next: any, opts?: { silent?: boolean }) {
     const payload = {
       niche_id: bundle.niche.id,
-      full_name: next.full_name, title: next.title, hero_tagline: next.hero_tagline,
-      bio: next.bio, email: next.email, phone: next.phone, whatsapp: next.whatsapp,
-      location: next.location, profile_picture_url: next.profile_picture_url,
+      full_name: next.full_name,
+      title: next.title,
+      hero_tagline: next.hero_tagline,
+      bio: next.bio,
+      email: next.email,
+      phone: next.phone,
+      whatsapp: next.whatsapp,
+      location: next.location,
+      profile_picture_url: next.profile_picture_url,
       hero_background_url: next.hero_background_url,
       projects_count: Number(next.projects_count) || 0,
       happy_clients: Number(next.happy_clients) || 0,
@@ -453,12 +729,19 @@ function SettingsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void 
 
   async function save() {
     setBusy(true);
-    try { await persist(form); }
-    catch (e: any) { toast.error(e.message); }
-    finally { setBusy(false); }
+    try {
+      await persist(form);
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
-  async function handlePersistField(field: "profile_picture_url" | "hero_background_url", url: string) {
+  async function handlePersistField(
+    field: "profile_picture_url" | "hero_background_url",
+    url: string,
+  ) {
     const next = { ...form, [field]: url };
     setForm(next);
     try {
@@ -471,28 +754,78 @@ function SettingsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void 
 
   return (
     <Card>
-      <CardHeader><CardTitle>Identity & Contact</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>Identity & Contact</CardTitle>
+      </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-2">
         {fields.map(([k, label]) => (
           <div key={k}>
             <Label>{label}</Label>
-            <Input value={form[k] ?? ""} onChange={(e) => setForm({ ...form, [k]: e.target.value })} />
+            <Input
+              value={form[k] ?? ""}
+              onChange={(e) => setForm({ ...form, [k]: e.target.value })}
+            />
           </div>
         ))}
         <div className="md:col-span-2">
           <Label>Bio</Label>
-          <Textarea rows={4} value={form.bio ?? ""} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
+          <Textarea
+            rows={4}
+            value={form.bio ?? ""}
+            onChange={(e) => setForm({ ...form, bio: e.target.value })}
+          />
         </div>
         <div className="md:col-span-2">
-          <FileField label="Profile picture" value={form.profile_picture_url ?? ""} onChange={(v) => setForm({ ...form, profile_picture_url: v })} onPersist={(v) => handlePersistField("profile_picture_url", v)} folder="profiles" accept="image/*" helperText="Auto-saves to your homepage on upload." />
+          <FileField
+            label="Profile picture"
+            value={form.profile_picture_url ?? ""}
+            onChange={(v) => setForm({ ...form, profile_picture_url: v })}
+            onPersist={(v) => handlePersistField("profile_picture_url", v)}
+            folder="profiles"
+            accept="image/*"
+            helperText="Auto-saves to your homepage on upload."
+          />
         </div>
         <div className="md:col-span-2">
-          <FileField label="Hero background image" value={form.hero_background_url ?? ""} onChange={(v) => setForm({ ...form, hero_background_url: v })} onPersist={(v) => handlePersistField("hero_background_url", v)} folder="hero" accept="image/*" helperText="Auto-saves to your homepage on upload." />
+          <FileField
+            label="Hero background image"
+            value={form.hero_background_url ?? ""}
+            onChange={(v) => setForm({ ...form, hero_background_url: v })}
+            onPersist={(v) => handlePersistField("hero_background_url", v)}
+            folder="hero"
+            accept="image/*"
+            helperText="Auto-saves to your homepage on upload."
+          />
         </div>
-        <div><Label>Projects Count</Label><Input type="number" value={form.projects_count ?? 0} onChange={(e) => setForm({ ...form, projects_count: e.target.value })} /></div>
-        <div><Label>Happy Clients</Label><Input type="number" value={form.happy_clients ?? 0} onChange={(e) => setForm({ ...form, happy_clients: e.target.value })} /></div>
-        <div><Label>Years Experience</Label><Input type="number" value={form.years_experience ?? 0} onChange={(e) => setForm({ ...form, years_experience: e.target.value })} /></div>
-        <div className="md:col-span-2"><Button onClick={save} disabled={busy}>{busy ? "Saving…" : "Save settings"}</Button></div>
+        <div>
+          <Label>Projects Count</Label>
+          <Input
+            type="number"
+            value={form.projects_count ?? 0}
+            onChange={(e) => setForm({ ...form, projects_count: e.target.value })}
+          />
+        </div>
+        <div>
+          <Label>Happy Clients</Label>
+          <Input
+            type="number"
+            value={form.happy_clients ?? 0}
+            onChange={(e) => setForm({ ...form, happy_clients: e.target.value })}
+          />
+        </div>
+        <div>
+          <Label>Years Experience</Label>
+          <Input
+            type="number"
+            value={form.years_experience ?? 0}
+            onChange={(e) => setForm({ ...form, years_experience: e.target.value })}
+          />
+        </div>
+        <div className="md:col-span-2">
+          <Button onClick={save} disabled={busy}>
+            {busy ? "Saving…" : "Save settings"}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
@@ -509,40 +842,72 @@ function ThemeEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void }) 
   async function save() {
     setBusy(true);
     try {
-      const { error } = await supabase.from("niche_settings").update({
-        primary_color: primary, secondary_color: secondary, accent_color: accent,
-        animation_enabled: animation, font_family: fontFamily,
-      }).eq("niche_id", bundle.niche.id);
+      const { error } = await supabase
+        .from("niche_settings")
+        .update({
+          primary_color: primary,
+          secondary_color: secondary,
+          accent_color: accent,
+          animation_enabled: animation,
+          font_family: fontFamily,
+        })
+        .eq("niche_id", bundle.niche.id);
       if (error) throw error;
       toast.success("Theme saved");
       onSaved();
-    } catch (e: any) { toast.error(e.message); }
-    finally { setBusy(false); }
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <Card>
-      <CardHeader><CardTitle>Theme & Styling</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>Theme & Styling</CardTitle>
+      </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-4">
         <ColorField label="Primary" value={primary} onChange={setPrimary} />
         <ColorField label="Secondary" value={secondary} onChange={setSecondary} />
         <ColorField label="Accent" value={accent} onChange={setAccent} />
-        <div><Label>Font family</Label><Input value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} /></div>
-        <div className="flex items-end gap-3 md:col-span-4">
-          <Switch checked={animation} onCheckedChange={setAnimation} /><Label>Animations</Label>
+        <div>
+          <Label>Font family</Label>
+          <Input value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} />
         </div>
-        <div className="md:col-span-4"><Button onClick={save} disabled={busy}>{busy ? "Saving…" : "Save theme"}</Button></div>
+        <div className="flex items-end gap-3 md:col-span-4">
+          <Switch checked={animation} onCheckedChange={setAnimation} />
+          <Label>Animations</Label>
+        </div>
+        <div className="md:col-span-4">
+          <Button onClick={save} disabled={busy}>
+            {busy ? "Saving…" : "Save theme"}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
 }
 
-function ColorField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+function ColorField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   return (
     <div>
       <Label>{label}</Label>
       <div className="flex gap-2">
-        <input type="color" value={value} onChange={(e) => onChange(e.target.value)} className="h-10 w-14 rounded-md border border-border" />
+        <input
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-10 w-14 rounded-md border border-border"
+        />
         <Input value={value} onChange={(e) => onChange(e.target.value)} />
       </div>
     </div>
@@ -565,28 +930,51 @@ function StoryEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void }) 
       if (error) throw error;
       toast.success("Story saved");
       onSaved();
-    } catch (e: any) { toast.error(e.message); }
-    finally { setBusy(false); }
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <Card>
-      <CardHeader><CardTitle>My Story</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>My Story</CardTitle>
+      </CardHeader>
       <CardContent className="space-y-4">
-        <div><Label>Story</Label><Textarea rows={4} value={story} onChange={(e) => setStory(e.target.value)} /></div>
-        <div><Label>Quote</Label><Input value={quote} onChange={(e) => setQuote(e.target.value)} /></div>
-        <FileField label="Story image" value={imageUrl} onChange={setImageUrl} folder="story" accept="image/*" />
-        <Button onClick={save} disabled={busy}>{busy ? "Saving…" : "Save story"}</Button>
+        <div>
+          <Label>Story</Label>
+          <Textarea rows={4} value={story} onChange={(e) => setStory(e.target.value)} />
+        </div>
+        <div>
+          <Label>Quote</Label>
+          <Input value={quote} onChange={(e) => setQuote(e.target.value)} />
+        </div>
+        <FileField
+          label="Story image"
+          value={imageUrl}
+          onChange={setImageUrl}
+          folder="story"
+          accept="image/*"
+        />
+        <Button onClick={save} disabled={busy}>
+          {busy ? "Saving…" : "Save story"}
+        </Button>
       </CardContent>
     </Card>
   );
 }
 
 function LimitsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void }) {
-  const sections = ["services", "projects", "testimonials", "brand_logos", "email_designs"];
+  const sections = ["services", "projects", "testimonials", "brand_logos"].concat(
+    bundle.niche.slug === "email-marketer" ? ["email_designs"] : [],
+  );
   const [vals, setVals] = useState<Record<string, number>>(() => {
     const m: Record<string, number> = {};
-    sections.forEach((s) => { m[s] = bundle.limits[s] ?? 6; });
+    sections.forEach((s) => {
+      m[s] = bundle.limits[s] ?? 6;
+    });
     return m;
   });
   const [busy, setBusy] = useState(false);
@@ -596,30 +984,53 @@ function LimitsEditor({ bundle, onSaved }: { bundle: any; onSaved: () => void })
     try {
       for (const s of sections) {
         const { data: existing } = await supabase
-          .from("niche_homepage_limits").select("id").eq("niche_id", bundle.niche.id).eq("section_name", s).maybeSingle();
+          .from("niche_homepage_limits")
+          .select("id")
+          .eq("niche_id", bundle.niche.id)
+          .eq("section_name", s)
+          .maybeSingle();
         if (existing) {
-          await supabase.from("niche_homepage_limits").update({ max_display: vals[s] }).eq("id", existing.id);
+          await supabase
+            .from("niche_homepage_limits")
+            .update({ max_display: vals[s] })
+            .eq("id", existing.id);
         } else {
-          await supabase.from("niche_homepage_limits").insert({ niche_id: bundle.niche.id, section_name: s, max_display: vals[s] });
+          await supabase
+            .from("niche_homepage_limits")
+            .insert({ niche_id: bundle.niche.id, section_name: s, max_display: vals[s] });
         }
       }
       toast.success("Limits saved");
       onSaved();
-    } catch (e: any) { toast.error(e.message); }
-    finally { setBusy(false); }
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <Card>
-      <CardHeader><CardTitle>Homepage display limits</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>Homepage display limits</CardTitle>
+      </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-5">
         {sections.map((s) => (
           <div key={s}>
             <Label className="capitalize">{s.replace("_", " ")}</Label>
-            <Input type="number" min={0} value={vals[s]} onChange={(e) => setVals({ ...vals, [s]: Number(e.target.value) })} />
+            <Input
+              type="number"
+              min={0}
+              value={vals[s]}
+              onChange={(e) => setVals({ ...vals, [s]: Number(e.target.value) })}
+            />
           </div>
         ))}
-        <div className="md:col-span-5"><Button onClick={save} disabled={busy}>{busy ? "Saving…" : "Save limits"}</Button></div>
+        <div className="md:col-span-5">
+          <Button onClick={save} disabled={busy}>
+            {busy ? "Saving…" : "Save limits"}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
@@ -635,16 +1046,22 @@ type CrudShellProps = {
   onChange: () => void;
   starrable?: boolean;
   renderRow: (row: any) => React.ReactNode;
-  renderForm: (
-    state: any,
-    setState: (s: any) => void
-  ) => React.ReactNode;
+  renderForm: (state: any, setState: (s: any) => void) => React.ReactNode;
   emptyState?: () => any;
   validate?: (state: any) => string | null;
 };
 
 function CrudShell({
-  title, rows, table, limit, onChange, starrable, renderRow, renderForm, emptyState, validate,
+  title,
+  rows,
+  table,
+  limit,
+  onChange,
+  starrable,
+  renderRow,
+  renderForm,
+  emptyState,
+  validate,
 }: CrudShellProps) {
   const [openNew, setOpenNew] = useState(false);
   const [editing, setEditing] = useState<any | null>(null);
@@ -656,13 +1073,24 @@ function CrudShell({
       toast.error(`Homepage can only show ${limit}. Remove a star first.`);
       return;
     }
-    const { error } = await supabase.from(table as any).update({ is_starred: !row.is_starred }).eq("id", row.id);
-    if (error) toast.error(error.message); else onChange();
+    const { error } = await supabase
+      .from(table as any)
+      .update({ is_starred: !row.is_starred })
+      .eq("id", row.id);
+    if (error) toast.error(error.message);
+    else onChange();
   }
 
   async function remove(row: any) {
-    const { error } = await supabase.from(table as any).delete().eq("id", row.id);
-    if (error) toast.error(error.message); else { toast.success("Deleted"); onChange(); }
+    const { error } = await supabase
+      .from(table as any)
+      .delete()
+      .eq("id", row.id);
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Deleted");
+      onChange();
+    }
   }
 
   return (
@@ -672,11 +1100,15 @@ function CrudShell({
           <span>{title}</span>
           <div className="flex items-center gap-3">
             {starrable && limit !== undefined && (
-              <span className="text-xs font-normal text-muted-foreground">Homepage: {starredCount} / {limit}</span>
+              <span className="text-xs font-normal text-muted-foreground">
+                Homepage: {starredCount} / {limit}
+              </span>
             )}
             <Dialog open={openNew} onOpenChange={setOpenNew}>
               <DialogTrigger asChild>
-                <Button size="sm" variant="outline"><Plus className="mr-1 h-3 w-3" /> Add</Button>
+                <Button size="sm" variant="outline">
+                  <Plus className="mr-1 h-3 w-3" /> Add
+                </Button>
               </DialogTrigger>
               <ItemDialog
                 title={`New ${title.replace(/s$/, "").toLowerCase()}`}
@@ -685,7 +1117,10 @@ function CrudShell({
                 renderForm={renderForm}
                 validate={validate}
                 onClose={() => setOpenNew(false)}
-                onSaved={() => { setOpenNew(false); onChange(); }}
+                onSaved={() => {
+                  setOpenNew(false);
+                  onChange();
+                }}
               />
             </Dialog>
           </div>
@@ -709,9 +1144,14 @@ function CrudShell({
                       <Star className={`h-4 w-4 ${r.is_starred ? "fill-current" : ""}`} />
                     </button>
                   )}
-                  <Dialog open={editing?.id === r.id} onOpenChange={(o) => setEditing(o ? r : null)}>
+                  <Dialog
+                    open={editing?.id === r.id}
+                    onOpenChange={(o) => setEditing(o ? r : null)}
+                  >
                     <DialogTrigger asChild>
-                      <Button variant="ghost" size="icon"><Pencil className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
                     </DialogTrigger>
                     {editing?.id === r.id && (
                       <ItemDialog
@@ -721,18 +1161,25 @@ function CrudShell({
                         renderForm={renderForm}
                         validate={validate}
                         onClose={() => setEditing(null)}
-                        onSaved={() => { setEditing(null); onChange(); }}
+                        onSaved={() => {
+                          setEditing(null);
+                          onChange();
+                        }}
                       />
                     )}
                   </Dialog>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                      <Button variant="ghost" size="icon">
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete this item?</AlertDialogTitle>
-                        <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+                        <AlertDialogDescription>
+                          This action cannot be undone.
+                        </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -751,12 +1198,21 @@ function CrudShell({
 }
 
 function ItemDialog({
-  title, table, initial, renderForm, validate, onClose, onSaved,
+  title,
+  table,
+  initial,
+  renderForm,
+  validate,
+  onClose,
+  onSaved,
 }: {
-  title: string; table: string; initial: any;
+  title: string;
+  table: string;
+  initial: any;
   renderForm: (s: any, setS: (s: any) => void) => React.ReactNode;
   validate?: (s: any) => string | null;
-  onClose: () => void; onSaved: () => void;
+  onClose: () => void;
+  onSaved: () => void;
 }) {
   const [state, setState] = useState<any>({ ...initial });
   const [busy, setBusy] = useState(false);
@@ -764,12 +1220,18 @@ function ItemDialog({
 
   async function save() {
     const err = validate?.(state);
-    if (err) { toast.error(err); return; }
+    if (err) {
+      toast.error(err);
+      return;
+    }
     setBusy(true);
     try {
       const { id, ...payload } = state;
       if (isEdit) {
-        const { error } = await supabase.from(table as any).update(payload).eq("id", id);
+        const { error } = await supabase
+          .from(table as any)
+          .update(payload)
+          .eq("id", id);
         if (error) throw error;
       } else {
         const { error } = await supabase.from(table as any).insert(payload);
@@ -777,17 +1239,26 @@ function ItemDialog({
       }
       toast.success(isEdit ? "Updated" : "Created");
       onSaved();
-    } catch (e: any) { toast.error(e.message); }
-    finally { setBusy(false); }
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-      <DialogHeader><DialogTitle>{title}</DialogTitle></DialogHeader>
+      <DialogHeader>
+        <DialogTitle>{title}</DialogTitle>
+      </DialogHeader>
       <div className="space-y-4 py-2">{renderForm(state, setState)}</div>
       <DialogFooter>
-        <Button variant="ghost" onClick={onClose}>Cancel</Button>
-        <Button onClick={save} disabled={busy}>{busy ? "Saving…" : "Save"}</Button>
+        <Button variant="ghost" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button onClick={save} disabled={busy}>
+          {busy ? "Saving…" : "Save"}
+        </Button>
       </DialogFooter>
     </DialogContent>
   );
@@ -798,8 +1269,20 @@ function ItemDialog({
 function ServicesSection({ nicheId, rows, limit, onChange }: any) {
   return (
     <CrudShell
-      title="Services" table="services" rows={rows} limit={limit} onChange={onChange} starrable
-      emptyState={() => ({ niche_id: nicheId, title: "", description: "", icon: "", sort_order: 0, is_starred: false })}
+      title="Services"
+      table="services"
+      rows={rows}
+      limit={limit}
+      onChange={onChange}
+      starrable
+      emptyState={() => ({
+        niche_id: nicheId,
+        title: "",
+        description: "",
+        icon: "",
+        sort_order: 0,
+        is_starred: false,
+      })}
       validate={(s) => (!s.title ? "Title is required" : null)}
       renderRow={(r) => (
         <>
@@ -809,10 +1292,30 @@ function ServicesSection({ nicheId, rows, limit, onChange }: any) {
       )}
       renderForm={(s, set) => (
         <>
-          <div><Label>Title *</Label><Input value={s.title ?? ""} onChange={(e) => set({ ...s, title: e.target.value })} /></div>
-          <div><Label>Description</Label><Textarea rows={3} value={s.description ?? ""} onChange={(e) => set({ ...s, description: e.target.value })} /></div>
-          <div><Label>Icon (lucide name or emoji)</Label><Input value={s.icon ?? ""} onChange={(e) => set({ ...s, icon: e.target.value })} /></div>
-          <div><Label>Sort order</Label><Input type="number" value={s.sort_order ?? 0} onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })} /></div>
+          <div>
+            <Label>Title *</Label>
+            <Input value={s.title ?? ""} onChange={(e) => set({ ...s, title: e.target.value })} />
+          </div>
+          <div>
+            <Label>Description</Label>
+            <Textarea
+              rows={3}
+              value={s.description ?? ""}
+              onChange={(e) => set({ ...s, description: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>Icon (lucide name or emoji)</Label>
+            <Input value={s.icon ?? ""} onChange={(e) => set({ ...s, icon: e.target.value })} />
+          </div>
+          <div>
+            <Label>Sort order</Label>
+            <Input
+              type="number"
+              value={s.sort_order ?? 0}
+              onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })}
+            />
+          </div>
         </>
       )}
     />
@@ -822,25 +1325,67 @@ function ServicesSection({ nicheId, rows, limit, onChange }: any) {
 function ProjectsSection({ nicheId, rows, limit, onChange }: any) {
   return (
     <CrudShell
-      title="Projects" table="projects" rows={rows} limit={limit} onChange={onChange} starrable
-      emptyState={() => ({ niche_id: nicheId, brand_name: "", category: "", description: "", platform: "", figma_link: "", external_link: "", media_url: "", media_type: "image", sort_order: 0, is_starred: false })}
+      title="Projects"
+      table="projects"
+      rows={rows}
+      limit={limit}
+      onChange={onChange}
+      starrable
+      emptyState={() => ({
+        niche_id: nicheId,
+        brand_name: "",
+        category: "",
+        description: "",
+        platform: "",
+        figma_link: "",
+        external_link: "",
+        media_url: "",
+        media_type: "image",
+        sort_order: 0,
+        is_starred: false,
+      })}
       validate={(s) => (!s.brand_name ? "Brand name is required" : null)}
       renderRow={(r) => (
         <>
           <div className="font-medium truncate">{r.brand_name}</div>
-          <div className="text-sm text-muted-foreground line-clamp-1">{r.category} {r.platform ? `• ${r.platform}` : ""}</div>
+          <div className="text-sm text-muted-foreground line-clamp-1">
+            {r.category} {r.platform ? `• ${r.platform}` : ""}
+          </div>
         </>
       )}
       renderForm={(s, set) => (
         <>
           <div className="grid gap-3 md:grid-cols-2">
-            <div><Label>Brand name *</Label><Input value={s.brand_name ?? ""} onChange={(e) => set({ ...s, brand_name: e.target.value })} /></div>
-            <div><Label>Category</Label><Input value={s.category ?? ""} onChange={(e) => set({ ...s, category: e.target.value })} /></div>
-            <div><Label>Platform</Label><Input value={s.platform ?? ""} onChange={(e) => set({ ...s, platform: e.target.value })} /></div>
+            <div>
+              <Label>Brand name *</Label>
+              <Input
+                value={s.brand_name ?? ""}
+                onChange={(e) => set({ ...s, brand_name: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Category</Label>
+              <Input
+                value={s.category ?? ""}
+                onChange={(e) => set({ ...s, category: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Platform</Label>
+              <Input
+                value={s.platform ?? ""}
+                onChange={(e) => set({ ...s, platform: e.target.value })}
+              />
+            </div>
             <div>
               <Label>Media type</Label>
-              <Select value={s.media_type ?? "image"} onValueChange={(v) => set({ ...s, media_type: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+              <Select
+                value={s.media_type ?? "image"}
+                onValueChange={(v) => set({ ...s, media_type: v })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="image">Image</SelectItem>
                   <SelectItem value="video">Video</SelectItem>
@@ -848,7 +1393,14 @@ function ProjectsSection({ nicheId, rows, limit, onChange }: any) {
               </Select>
             </div>
           </div>
-          <div><Label>Description</Label><Textarea rows={3} value={s.description ?? ""} onChange={(e) => set({ ...s, description: e.target.value })} /></div>
+          <div>
+            <Label>Description</Label>
+            <Textarea
+              rows={3}
+              value={s.description ?? ""}
+              onChange={(e) => set({ ...s, description: e.target.value })}
+            />
+          </div>
           <FileField
             label="Project media"
             value={s.media_url ?? ""}
@@ -858,10 +1410,29 @@ function ProjectsSection({ nicheId, rows, limit, onChange }: any) {
             preview={s.media_type === "video" ? "video" : "image"}
           />
           <div className="grid gap-3 md:grid-cols-2">
-            <div><Label>Figma link</Label><Input value={s.figma_link ?? ""} onChange={(e) => set({ ...s, figma_link: e.target.value })} /></div>
-            <div><Label>External link</Label><Input value={s.external_link ?? ""} onChange={(e) => set({ ...s, external_link: e.target.value })} /></div>
+            <div>
+              <Label>Figma link</Label>
+              <Input
+                value={s.figma_link ?? ""}
+                onChange={(e) => set({ ...s, figma_link: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>External link</Label>
+              <Input
+                value={s.external_link ?? ""}
+                onChange={(e) => set({ ...s, external_link: e.target.value })}
+              />
+            </div>
           </div>
-          <div><Label>Sort order</Label><Input type="number" value={s.sort_order ?? 0} onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })} /></div>
+          <div>
+            <Label>Sort order</Label>
+            <Input
+              type="number"
+              value={s.sort_order ?? 0}
+              onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })}
+            />
+          </div>
         </>
       )}
     />
@@ -871,26 +1442,82 @@ function ProjectsSection({ nicheId, rows, limit, onChange }: any) {
 function TestimonialsSection({ nicheId, rows, limit, onChange }: any) {
   return (
     <CrudShell
-      title="Testimonials" table="testimonials" rows={rows} limit={limit} onChange={onChange} starrable
-      emptyState={() => ({ niche_id: nicheId, client_name: "", role: "", photo_url: "", review_text: "", rating: 5, sort_order: 0, is_starred: false })}
-      validate={(s) => (!s.client_name ? "Client name required" : !s.review_text ? "Review text required" : null)}
+      title="Testimonials"
+      table="testimonials"
+      rows={rows}
+      limit={limit}
+      onChange={onChange}
+      starrable
+      emptyState={() => ({
+        niche_id: nicheId,
+        client_name: "",
+        role: "",
+        photo_url: "",
+        review_text: "",
+        rating: 5,
+        sort_order: 0,
+        is_starred: false,
+      })}
+      validate={(s) =>
+        !s.client_name ? "Client name required" : !s.review_text ? "Review text required" : null
+      }
       renderRow={(r) => (
         <>
-          <div className="font-medium truncate">{r.client_name} <span className="text-xs text-muted-foreground">★ {r.rating}</span></div>
+          <div className="font-medium truncate">
+            {r.client_name} <span className="text-xs text-muted-foreground">★ {r.rating}</span>
+          </div>
           <div className="text-sm text-muted-foreground line-clamp-1">{r.review_text}</div>
         </>
       )}
       renderForm={(s, set) => (
         <>
           <div className="grid gap-3 md:grid-cols-2">
-            <div><Label>Client name *</Label><Input value={s.client_name ?? ""} onChange={(e) => set({ ...s, client_name: e.target.value })} /></div>
-            <div><Label>Role / company</Label><Input value={s.role ?? ""} onChange={(e) => set({ ...s, role: e.target.value })} /></div>
+            <div>
+              <Label>Client name *</Label>
+              <Input
+                value={s.client_name ?? ""}
+                onChange={(e) => set({ ...s, client_name: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Role / company</Label>
+              <Input value={s.role ?? ""} onChange={(e) => set({ ...s, role: e.target.value })} />
+            </div>
           </div>
-          <FileField label="Client photo" value={s.photo_url ?? ""} onChange={(v) => set({ ...s, photo_url: v })} folder="testimonials" accept="image/*" />
-          <div><Label>Review text *</Label><Textarea rows={4} value={s.review_text ?? ""} onChange={(e) => set({ ...s, review_text: e.target.value })} /></div>
+          <FileField
+            label="Client photo"
+            value={s.photo_url ?? ""}
+            onChange={(v) => set({ ...s, photo_url: v })}
+            folder="testimonials"
+            accept="image/*"
+          />
+          <div>
+            <Label>Review text *</Label>
+            <Textarea
+              rows={4}
+              value={s.review_text ?? ""}
+              onChange={(e) => set({ ...s, review_text: e.target.value })}
+            />
+          </div>
           <div className="grid gap-3 md:grid-cols-2">
-            <div><Label>Rating (1-5)</Label><Input type="number" min={1} max={5} value={s.rating ?? 5} onChange={(e) => set({ ...s, rating: Number(e.target.value) })} /></div>
-            <div><Label>Sort order</Label><Input type="number" value={s.sort_order ?? 0} onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })} /></div>
+            <div>
+              <Label>Rating (1-5)</Label>
+              <Input
+                type="number"
+                min={1}
+                max={5}
+                value={s.rating ?? 5}
+                onChange={(e) => set({ ...s, rating: Number(e.target.value) })}
+              />
+            </div>
+            <div>
+              <Label>Sort order</Label>
+              <Input
+                type="number"
+                value={s.sort_order ?? 0}
+                onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })}
+              />
+            </div>
           </div>
         </>
       )}
@@ -901,21 +1528,63 @@ function TestimonialsSection({ nicheId, rows, limit, onChange }: any) {
 function BrandLogosSection({ nicheId, rows, limit, onChange }: any) {
   return (
     <CrudShell
-      title="Brand logos" table="brand_logos" rows={rows} limit={limit} onChange={onChange} starrable
-      emptyState={() => ({ niche_id: nicheId, logo_url: "", alt_text: "", bg_color: "#FFFFFF", sort_order: 0, is_starred: false })}
+      title="Brand logos"
+      table="brand_logos"
+      rows={rows}
+      limit={limit}
+      onChange={onChange}
+      starrable
+      emptyState={() => ({
+        niche_id: nicheId,
+        logo_url: "",
+        alt_text: "",
+        bg_color: "#FFFFFF",
+        sort_order: 0,
+        is_starred: false,
+      })}
       validate={(s) => (!s.logo_url ? "Logo image required" : null)}
       renderRow={(r) => (
         <div className="flex items-center gap-3">
-          {r.logo_url && <img src={r.logo_url} alt={r.alt_text} className="h-8 w-8 rounded object-contain" style={{ background: r.bg_color }} />}
+          {r.logo_url && (
+            <img
+              src={r.logo_url}
+              alt={r.alt_text}
+              className="h-8 w-8 rounded object-contain"
+              style={{ background: r.bg_color }}
+            />
+          )}
           <div className="font-medium truncate">{r.alt_text || "Untitled logo"}</div>
         </div>
       )}
       renderForm={(s, set) => (
         <>
-          <FileField label="Logo image *" value={s.logo_url ?? ""} onChange={(v) => set({ ...s, logo_url: v })} folder="logos" accept="image/*" />
-          <div><Label>Alt text</Label><Input value={s.alt_text ?? ""} onChange={(e) => set({ ...s, alt_text: e.target.value })} /></div>
-          <ColorField label="Background color" value={s.bg_color ?? "#FFFFFF"} onChange={(v) => set({ ...s, bg_color: v })} />
-          <div><Label>Sort order</Label><Input type="number" value={s.sort_order ?? 0} onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })} /></div>
+          <FileField
+            label="Logo image *"
+            value={s.logo_url ?? ""}
+            onChange={(v) => set({ ...s, logo_url: v })}
+            folder="logos"
+            accept="image/*"
+          />
+          <div>
+            <Label>Alt text</Label>
+            <Input
+              value={s.alt_text ?? ""}
+              onChange={(e) => set({ ...s, alt_text: e.target.value })}
+            />
+          </div>
+          <ColorField
+            label="Background color"
+            value={s.bg_color ?? "#FFFFFF"}
+            onChange={(v) => set({ ...s, bg_color: v })}
+          />
+          <div>
+            <Label>Sort order</Label>
+            <Input
+              type="number"
+              value={s.sort_order ?? 0}
+              onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })}
+            />
+          </div>
         </>
       )}
     />
@@ -925,25 +1594,73 @@ function BrandLogosSection({ nicheId, rows, limit, onChange }: any) {
 function CertificationsSection({ nicheId, rows, onChange }: any) {
   return (
     <CrudShell
-      title="Certifications" table="certifications" rows={rows} onChange={onChange}
-      emptyState={() => ({ niche_id: nicheId, name: "", issuer: "", date_earned: null, badge_url: "", credential_link: "", sort_order: 0 })}
+      title="Certifications"
+      table="certifications"
+      rows={rows}
+      onChange={onChange}
+      emptyState={() => ({
+        niche_id: nicheId,
+        name: "",
+        issuer: "",
+        date_earned: null,
+        badge_url: "",
+        credential_link: "",
+        sort_order: 0,
+      })}
       validate={(s) => (!s.name ? "Name required" : null)}
       renderRow={(r) => (
         <>
           <div className="font-medium truncate">{r.name}</div>
-          <div className="text-sm text-muted-foreground line-clamp-1">{r.issuer} {r.date_earned ? `• ${r.date_earned}` : ""}</div>
+          <div className="text-sm text-muted-foreground line-clamp-1">
+            {r.issuer} {r.date_earned ? `• ${r.date_earned}` : ""}
+          </div>
         </>
       )}
       renderForm={(s, set) => (
         <>
           <div className="grid gap-3 md:grid-cols-2">
-            <div><Label>Name *</Label><Input value={s.name ?? ""} onChange={(e) => set({ ...s, name: e.target.value })} /></div>
-            <div><Label>Issuer</Label><Input value={s.issuer ?? ""} onChange={(e) => set({ ...s, issuer: e.target.value })} /></div>
-            <div><Label>Date earned</Label><Input type="date" value={s.date_earned ?? ""} onChange={(e) => set({ ...s, date_earned: e.target.value || null })} /></div>
-            <div><Label>Credential link</Label><Input value={s.credential_link ?? ""} onChange={(e) => set({ ...s, credential_link: e.target.value })} /></div>
+            <div>
+              <Label>Name *</Label>
+              <Input value={s.name ?? ""} onChange={(e) => set({ ...s, name: e.target.value })} />
+            </div>
+            <div>
+              <Label>Issuer</Label>
+              <Input
+                value={s.issuer ?? ""}
+                onChange={(e) => set({ ...s, issuer: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Date earned</Label>
+              <Input
+                type="date"
+                value={s.date_earned ?? ""}
+                onChange={(e) => set({ ...s, date_earned: e.target.value || null })}
+              />
+            </div>
+            <div>
+              <Label>Credential link</Label>
+              <Input
+                value={s.credential_link ?? ""}
+                onChange={(e) => set({ ...s, credential_link: e.target.value })}
+              />
+            </div>
           </div>
-          <FileField label="Badge image" value={s.badge_url ?? ""} onChange={(v) => set({ ...s, badge_url: v })} folder="certifications" accept="image/*" />
-          <div><Label>Sort order</Label><Input type="number" value={s.sort_order ?? 0} onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })} /></div>
+          <FileField
+            label="Badge image"
+            value={s.badge_url ?? ""}
+            onChange={(v) => set({ ...s, badge_url: v })}
+            folder="certifications"
+            accept="image/*"
+          />
+          <div>
+            <Label>Sort order</Label>
+            <Input
+              type="number"
+              value={s.sort_order ?? 0}
+              onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })}
+            />
+          </div>
         </>
       )}
     />
@@ -953,7 +1670,10 @@ function CertificationsSection({ nicheId, rows, onChange }: any) {
 function SkillsSection({ nicheId, rows, onChange }: any) {
   return (
     <CrudShell
-      title="Skills" table="skills" rows={rows} onChange={onChange}
+      title="Skills"
+      table="skills"
+      rows={rows}
+      onChange={onChange}
       emptyState={() => ({ niche_id: nicheId, name: "", percentage: 80, icon: "", sort_order: 0 })}
       validate={(s) => (!s.name ? "Name required" : null)}
       renderRow={(r) => (
@@ -964,10 +1684,32 @@ function SkillsSection({ nicheId, rows, onChange }: any) {
       )}
       renderForm={(s, set) => (
         <>
-          <div><Label>Name *</Label><Input value={s.name ?? ""} onChange={(e) => set({ ...s, name: e.target.value })} /></div>
-          <div><Label>Percentage (0-100)</Label><Input type="number" min={0} max={100} value={s.percentage ?? 0} onChange={(e) => set({ ...s, percentage: Number(e.target.value) })} /></div>
-          <div><Label>Icon</Label><Input value={s.icon ?? ""} onChange={(e) => set({ ...s, icon: e.target.value })} /></div>
-          <div><Label>Sort order</Label><Input type="number" value={s.sort_order ?? 0} onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })} /></div>
+          <div>
+            <Label>Name *</Label>
+            <Input value={s.name ?? ""} onChange={(e) => set({ ...s, name: e.target.value })} />
+          </div>
+          <div>
+            <Label>Percentage (0-100)</Label>
+            <Input
+              type="number"
+              min={0}
+              max={100}
+              value={s.percentage ?? 0}
+              onChange={(e) => set({ ...s, percentage: Number(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label>Icon</Label>
+            <Input value={s.icon ?? ""} onChange={(e) => set({ ...s, icon: e.target.value })} />
+          </div>
+          <div>
+            <Label>Sort order</Label>
+            <Input
+              type="number"
+              value={s.sort_order ?? 0}
+              onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })}
+            />
+          </div>
         </>
       )}
     />
@@ -977,7 +1719,10 @@ function SkillsSection({ nicheId, rows, onChange }: any) {
 function SocialLinksSection({ nicheId, rows, onChange }: any) {
   return (
     <CrudShell
-      title="Social links" table="social_links" rows={rows} onChange={onChange}
+      title="Social links"
+      table="social_links"
+      rows={rows}
+      onChange={onChange}
       emptyState={() => ({ niche_id: nicheId, platform: "", url: "", icon: "", sort_order: 0 })}
       validate={(s) => (!s.platform ? "Platform required" : !s.url ? "URL required" : null)}
       renderRow={(r) => (
@@ -988,10 +1733,30 @@ function SocialLinksSection({ nicheId, rows, onChange }: any) {
       )}
       renderForm={(s, set) => (
         <>
-          <div><Label>Platform *</Label><Input value={s.platform ?? ""} onChange={(e) => set({ ...s, platform: e.target.value })} placeholder="Twitter, LinkedIn, GitHub…" /></div>
-          <div><Label>URL *</Label><Input value={s.url ?? ""} onChange={(e) => set({ ...s, url: e.target.value })} /></div>
-          <div><Label>Icon</Label><Input value={s.icon ?? ""} onChange={(e) => set({ ...s, icon: e.target.value })} /></div>
-          <div><Label>Sort order</Label><Input type="number" value={s.sort_order ?? 0} onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })} /></div>
+          <div>
+            <Label>Platform *</Label>
+            <Input
+              value={s.platform ?? ""}
+              onChange={(e) => set({ ...s, platform: e.target.value })}
+              placeholder="Twitter, LinkedIn, GitHub…"
+            />
+          </div>
+          <div>
+            <Label>URL *</Label>
+            <Input value={s.url ?? ""} onChange={(e) => set({ ...s, url: e.target.value })} />
+          </div>
+          <div>
+            <Label>Icon</Label>
+            <Input value={s.icon ?? ""} onChange={(e) => set({ ...s, icon: e.target.value })} />
+          </div>
+          <div>
+            <Label>Sort order</Label>
+            <Input
+              type="number"
+              value={s.sort_order ?? 0}
+              onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })}
+            />
+          </div>
         </>
       )}
     />
@@ -1001,9 +1766,24 @@ function SocialLinksSection({ nicheId, rows, onChange }: any) {
 function EmailDesignsSection({ nicheId, rows, limit, onChange }: any) {
   return (
     <CrudShell
-      title="Email designs" table="email_designs" rows={rows} limit={limit} onChange={onChange} starrable
-      emptyState={() => ({ niche_id: nicheId, title: "", client_name: "", description: "", preview_url: "", sort_order: 0, is_starred: false })}
-      validate={(s) => (!s.title ? "Title required" : !s.preview_url ? "Preview image required" : null)}
+      title="Email designs"
+      table="email_designs"
+      rows={rows}
+      limit={limit}
+      onChange={onChange}
+      starrable
+      emptyState={() => ({
+        niche_id: nicheId,
+        title: "",
+        client_name: "",
+        description: "",
+        preview_url: "",
+        sort_order: 0,
+        is_starred: false,
+      })}
+      validate={(s) =>
+        !s.title ? "Title required" : !s.preview_url ? "Preview image required" : null
+      }
       renderRow={(r) => (
         <>
           <div className="font-medium truncate">{r.title}</div>
@@ -1012,14 +1792,240 @@ function EmailDesignsSection({ nicheId, rows, limit, onChange }: any) {
       )}
       renderForm={(s, set) => (
         <>
-          <div><Label>Title *</Label><Input value={s.title ?? ""} onChange={(e) => set({ ...s, title: e.target.value })} /></div>
-          <div><Label>Client name</Label><Input value={s.client_name ?? ""} onChange={(e) => set({ ...s, client_name: e.target.value })} /></div>
-          <div><Label>Description</Label><Textarea rows={3} value={s.description ?? ""} onChange={(e) => set({ ...s, description: e.target.value })} /></div>
-          <FileField label="Preview image *" value={s.preview_url ?? ""} onChange={(v) => set({ ...s, preview_url: v })} folder="email-designs" accept="image/*" />
-          <div><Label>Sort order</Label><Input type="number" value={s.sort_order ?? 0} onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })} /></div>
+          <div>
+            <Label>Title *</Label>
+            <Input value={s.title ?? ""} onChange={(e) => set({ ...s, title: e.target.value })} />
+          </div>
+          <div>
+            <Label>Client name</Label>
+            <Input
+              value={s.client_name ?? ""}
+              onChange={(e) => set({ ...s, client_name: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>Description</Label>
+            <Textarea
+              rows={3}
+              value={s.description ?? ""}
+              onChange={(e) => set({ ...s, description: e.target.value })}
+            />
+          </div>
+          <FileField
+            label="Preview image *"
+            value={s.preview_url ?? ""}
+            onChange={(v) => set({ ...s, preview_url: v })}
+            folder="email-designs"
+            accept="image/*"
+          />
+          <div>
+            <Label>Sort order</Label>
+            <Input
+              type="number"
+              value={s.sort_order ?? 0}
+              onChange={(e) => set({ ...s, sort_order: Number(e.target.value) })}
+            />
+          </div>
         </>
       )}
     />
+  );
+}
+
+/* ------------------------- TEAM / USERS ------------------------- */
+
+type TeamUser = { user_id: string; email: string; is_admin: boolean; created_at: string };
+
+function TeamSection() {
+  const { user } = useAuth();
+  const [users, setUsers] = useState<TeamUser[]>([]);
+  const [pending, setPending] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [newEmail, setNewEmail] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [unsupported, setUnsupported] = useState(false);
+
+  async function load() {
+    setLoading(true);
+    try {
+      const { data, error } = await (supabase as any).rpc("admin_list_users");
+      if (error) throw error;
+      const list = (data ?? []) as TeamUser[];
+      setUsers(list);
+
+      const { data: allow } = await supabase.from("admin_emails" as any).select("email");
+      const signedUp = new Set(list.map((u) => u.email.toLowerCase()));
+      setPending(
+        ((allow ?? []) as any[])
+          .map((a) => a.email)
+          .filter((e: string) => !signedUp.has(e.toLowerCase())),
+      );
+      setUnsupported(false);
+    } catch (e: any) {
+      // RPC/table not present yet (migration not deployed)
+      setUnsupported(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function setAdmin(email: string, makeAdmin: boolean) {
+    setBusy(true);
+    try {
+      const { error } = await (supabase as any).rpc("admin_set_admin", {
+        target_email: email,
+        make_admin: makeAdmin,
+      });
+      if (error) throw error;
+      toast.success(makeAdmin ? `Granted admin to ${email}` : `Removed admin from ${email}`);
+      await load();
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function add() {
+    const email = newEmail.trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      toast.error("Enter a valid email");
+      return;
+    }
+    await setAdmin(email, true);
+    setNewEmail("");
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-4 w-4" /> Team & Admin Access
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Grant or revoke admin access by email. If the person hasn't signed up yet, they're added
+            to a pre-authorized list and become admin automatically on their first sign-up at{" "}
+            <span className="font-mono">/admin</span>.
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              type="email"
+              placeholder="name@email.com"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") add();
+              }}
+            />
+            <Button onClick={add} disabled={busy}>
+              <UserPlus className="mr-1 h-4 w-4" /> Grant admin
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {unsupported ? (
+        <Card>
+          <CardContent className="py-6 text-sm text-muted-foreground">
+            User management isn't available yet — deploy the latest database migration to enable it.
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <Card>
+            <CardHeader>
+              <CardTitle>Members</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <p className="text-sm text-muted-foreground">Loading…</p>
+              ) : users.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No users yet.</p>
+              ) : (
+                <div className="divide-y divide-border">
+                  {users.map((u) => {
+                    const isOwner = u.email.toLowerCase() === "ogbeifundaniel0@gmail.com";
+                    const isSelf = user?.email?.toLowerCase() === u.email.toLowerCase();
+                    return (
+                      <div key={u.user_id} className="flex items-center justify-between gap-3 py-3">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 font-medium">
+                            <span className="truncate">{u.email}</span>
+                            {isOwner && (
+                              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
+                                Owner
+                              </span>
+                            )}
+                            {isSelf && (
+                              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] uppercase tracking-wide text-muted-foreground">
+                                You
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Joined {new Date(u.created_at).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span
+                            className={cn(
+                              "text-xs font-medium",
+                              u.is_admin
+                                ? "text-[color:var(--brand-primary-hex)]"
+                                : "text-muted-foreground",
+                            )}
+                          >
+                            {u.is_admin ? "Admin" : "User"}
+                          </span>
+                          <Switch
+                            checked={u.is_admin}
+                            disabled={busy || isOwner}
+                            onCheckedChange={(v) => setAdmin(u.email, v)}
+                            aria-label="Toggle admin"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {pending.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Pre-authorized (not signed up yet)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="divide-y divide-border">
+                  {pending.map((email) => (
+                    <div key={email} className="flex items-center justify-between gap-3 py-3">
+                      <span className="truncate font-medium">{email}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled={busy}
+                        onClick={() => setAdmin(email, false)}
+                      >
+                        <ShieldX className="mr-1 h-4 w-4 text-destructive" /> Remove
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </>
+      )}
+    </div>
   );
 }
 
@@ -1042,15 +2048,24 @@ function NewNicheCard({ onCreated }: { onCreated: (slug: string) => void }) {
   }
 
   async function create() {
-    if (!displayName || !slug) { toast.error("Display name and slug are required"); return; }
+    if (!displayName || !slug) {
+      toast.error("Display name and slug are required");
+      return;
+    }
     setBusy(true);
     try {
-      const { data: existing } = await supabase.from("niches").select("id").eq("slug", slug).maybeSingle();
+      const { data: existing } = await supabase
+        .from("niches")
+        .select("id")
+        .eq("slug", slug)
+        .maybeSingle();
       if (existing) throw new Error("That slug is already taken");
 
-      const { data: niche, error } = await supabase.from("niches")
+      const { data: niche, error } = await supabase
+        .from("niches")
         .insert({ slug, display_name: displayName, sort_order: 99, is_active: true })
-        .select().single();
+        .select()
+        .single();
       if (error) throw error;
 
       await supabase.from("niche_settings").insert({
@@ -1069,17 +2084,23 @@ function NewNicheCard({ onCreated }: { onCreated: (slug: string) => void }) {
         { section_name: "testimonials", max_display: 6 },
         { section_name: "brand_logos", max_display: 8 },
       ];
-      await supabase.from("niche_homepage_limits").insert(
-        sections.map((s) => ({ niche_id: niche.id, ...s }))
-      );
+      await supabase
+        .from("niche_homepage_limits")
+        .insert(sections.map((s) => ({ niche_id: niche.id, ...s })));
 
       toast.success(`Niche "${displayName}" created`);
       qc.invalidateQueries({ queryKey: ["niches"] });
       onCreated(slug);
       setOpen(false);
-      setDisplayName(""); setSlug(""); setTagline(""); setHeroBg("");
-    } catch (e: any) { toast.error(e.message); }
-    finally { setBusy(false); }
+      setDisplayName("");
+      setSlug("");
+      setTagline("");
+      setHeroBg("");
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   if (!open) {
@@ -1088,7 +2109,9 @@ function NewNicheCard({ onCreated }: { onCreated: (slug: string) => void }) {
         <CardContent className="flex items-center justify-between py-4">
           <div>
             <div className="font-medium">Add a new niche</div>
-            <div className="text-xs text-muted-foreground">Create another professional identity</div>
+            <div className="text-xs text-muted-foreground">
+              Create another professional identity
+            </div>
           </div>
           <Button onClick={() => setOpen(true)} variant="outline">
             <Plus className="mr-1 h-4 w-4" /> New niche
@@ -1100,23 +2123,51 @@ function NewNicheCard({ onCreated }: { onCreated: (slug: string) => void }) {
 
   return (
     <Card>
-      <CardHeader><CardTitle>New niche</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>New niche</CardTitle>
+      </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-2">
-        <div><Label>Display name *</Label><Input value={displayName} onChange={(e) => autoSlug(e.target.value)} placeholder="Photographer" /></div>
+        <div>
+          <Label>Display name *</Label>
+          <Input
+            value={displayName}
+            onChange={(e) => autoSlug(e.target.value)}
+            placeholder="Photographer"
+          />
+        </div>
         <div>
           <Label>URL slug *</Label>
-          <Input value={slug} onChange={(e) => setSlug(toSlug(e.target.value))} placeholder="photographer" />
-          <p className="mt-1 text-xs text-muted-foreground">Public URL: /niche/{slug || "your-slug"}</p>
+          <Input
+            value={slug}
+            onChange={(e) => setSlug(toSlug(e.target.value))}
+            placeholder="photographer"
+          />
+          <p className="mt-1 text-xs text-muted-foreground">
+            Public URL: /niche/{slug || "your-slug"}
+          </p>
         </div>
-        <div className="md:col-span-2"><Label>Hero tagline</Label><Input value={tagline} onChange={(e) => setTagline(e.target.value)} /></div>
         <div className="md:col-span-2">
-          <FileField label="Hero background image" value={heroBg} onChange={setHeroBg} folder="hero" accept="image/*" />
+          <Label>Hero tagline</Label>
+          <Input value={tagline} onChange={(e) => setTagline(e.target.value)} />
+        </div>
+        <div className="md:col-span-2">
+          <FileField
+            label="Hero background image"
+            value={heroBg}
+            onChange={setHeroBg}
+            folder="hero"
+            accept="image/*"
+          />
         </div>
         <ColorField label="Primary color" value={primary} onChange={setPrimary} />
         <ColorField label="Accent color" value={accent} onChange={setAccent} />
         <div className="md:col-span-2 flex gap-2">
-          <Button onClick={create} disabled={busy}>{busy ? "Creating…" : "Create niche"}</Button>
-          <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={create} disabled={busy}>
+            {busy ? "Creating…" : "Create niche"}
+          </Button>
+          <Button variant="ghost" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
         </div>
       </CardContent>
     </Card>
@@ -1124,5 +2175,9 @@ function NewNicheCard({ onCreated }: { onCreated: (slug: string) => void }) {
 }
 
 function toSlug(v: string) {
-  return v.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return v
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }

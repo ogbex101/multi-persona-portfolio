@@ -1,28 +1,38 @@
 import type { NicheBundle } from "@/lib/niche-queries";
 import { SectionShell } from "./SectionShell";
+import { Marquee } from "./Marquee";
 
 export function BrandLogos({ bundle }: { bundle: NicheBundle }) {
-  const limit = bundle.limits.brand_logos ?? 8;
   const starred = bundle.brandLogos.filter((b: any) => b.is_starred);
-  const list = (starred.length ? starred : bundle.brandLogos).slice(0, limit);
+  const list = starred.length ? starred : bundle.brandLogos;
   if (list.length === 0) return null;
+
   return (
     <SectionShell id="brands" eyebrow="Trusted by" title="Brands I've worked with.">
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-        {list.map((b: any) => (
+      <Marquee
+        items={list}
+        ariaLabel="Brand logos"
+        direction="right"
+        speed={24}
+        itemClassName="w-[180px]"
+        renderItem={(b: any) => (
           <div
-            key={b.id}
-            className="grid aspect-[3/2] place-items-center overflow-hidden rounded-2xl border border-border p-6 shadow-soft transition-smooth hover:shadow-elegant"
+            className="grid aspect-[3/2] w-[180px] place-items-center overflow-hidden rounded-2xl border border-border p-6 shadow-soft transition-smooth hover:shadow-elegant"
             style={{ backgroundColor: b.bg_color ?? "#FFFFFF" }}
           >
             {b.logo_url ? (
-              <img src={b.logo_url} alt={b.alt_text ?? "Brand"} className="max-h-16 w-auto object-contain" loading="lazy" />
+              <img
+                src={b.logo_url}
+                alt={b.alt_text ?? "Brand"}
+                className="max-h-14 w-auto object-contain"
+                loading="lazy"
+              />
             ) : (
-              <span className="font-display font-bold">{b.alt_text}</span>
+              <span className="font-display font-bold text-slate-800">{b.alt_text}</span>
             )}
           </div>
-        ))}
-      </div>
+        )}
+      />
     </SectionShell>
   );
 }

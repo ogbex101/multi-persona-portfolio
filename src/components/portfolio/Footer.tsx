@@ -7,7 +7,9 @@ export function Footer({ bundle }: { bundle: NicheBundle }) {
     <footer className="border-t border-border bg-surface">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-4 py-10 sm:px-6 md:flex-row lg:px-8">
         <div>
-          <div className="font-display text-lg font-bold">{s?.full_name ?? "Ogbeifun Daniel Osewe"}</div>
+          <div className="font-display text-lg font-bold">
+            {s?.full_name ?? "Ogbeifun Daniel Osewe"}
+          </div>
           <div className="text-sm text-muted-foreground">{s?.title}</div>
         </div>
 
