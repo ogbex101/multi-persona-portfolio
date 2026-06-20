@@ -1,6 +1,7 @@
 import type { NicheBundle } from "@/lib/niche-queries";
 import { SectionShell } from "./SectionShell";
 import { Reveal } from "./Reveal";
+import { Slideshow } from "./Slideshow";
 import { ExternalLink, ArrowUpRight, Figma } from "lucide-react";
 
 /** Live-screenshot fallback for projects without an uploaded cover. */
@@ -38,13 +39,20 @@ export function Projects({ bundle, showAll = false }: { bundle: NicheBundle; sho
         </Reveal>
       )}
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {(showAll ? list : rest).map((p: any, i: number) => (
-          <Reveal key={p.id} variant={i % 2 === 0 ? "up" : "zoom"} delay={(i % 3) * 80}>
-            <ProjectCard project={p} />
-          </Reveal>
-        ))}
-      </div>
+      {showAll ? (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {list.map((p: any) => (
+            <ProjectCard key={p.id} project={p} />
+          ))}
+        </div>
+      ) : rest.length > 0 ? (
+        <Slideshow
+          items={rest}
+          ariaLabel="More projects"
+          perView={[1, 2, 3]}
+          renderItem={(p: any) => <ProjectCard key={p.id} project={p} />}
+        />
+      ) : null}
     </SectionShell>
   );
 }

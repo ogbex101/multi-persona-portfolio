@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { allNichesQuery, nicheBundleQuery } from "@/lib/niche-queries";
+import { allNichesAdminQuery, nicheBundleQuery } from "@/lib/niche-queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,6 +63,8 @@ import {
   Users,
   UserPlus,
   ShieldX,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { FileField } from "@/components/admin/FileField";
 import { cn } from "@/lib/utils";
@@ -86,7 +88,7 @@ function AdminPage() {
 
 function LoginScreen() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("ogbeifundaniel0@gmail.com");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -238,7 +240,8 @@ const SECTIONS: {
 
 function Dashboard() {
   const navigate = useNavigate();
-  const { data: niches = [] } = useQuery(allNichesQuery());
+  const qc = useQueryClient();
+  const { data: niches = [] } = useQuery(allNichesAdminQuery());
   const [activeSlug, setActiveSlug] = useState<string>("fullstack-developer");
   const [section, setSection] = useState<SectionId>("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -248,6 +251,22 @@ function Dashboard() {
       setActiveSlug(niches[0].slug);
     }
   }, [niches, activeSlug]);
+
+  const activeNiche = niches.find((n) => n.slug === activeSlug);
+
+  async function toggleVisibility(next: boolean) {
+    if (!activeNiche) return;
+    const { error } = await supabase
+      .from("niches")
+      .update({ is_active: next })
+      .eq("id", activeNiche.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(next ? "Niche is now visible" : "Niche hidden from the site");
+    qc.invalidateQueries({ queryKey: ["niches"] });
+  }
 
   const visibleSections = SECTIONS.filter((s) => !s.emailOnly || activeSlug === "email-marketer");
 
@@ -284,10 +303,24 @@ function Dashboard() {
                 {niches.map((n) => (
                   <SelectItem key={n.id} value={n.slug}>
                     {n.display_name}
+                    {!n.is_active ? " (hidden)" : ""}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {activeNiche && (
+              <label className="flex items-center gap-2 rounded-md border border-border px-3 py-1.5 text-xs font-medium">
+                {activeNiche.is_active ? (
+                  <Eye className="h-3.5 w-3.5 text-[color:var(--brand-primary-hex)]" />
+                ) : (
+                  <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+                )}
+                <span className="hidden sm:inline">
+                  {activeNiche.is_active ? "Visible" : "Hidden"}
+                </span>
+                <Switch checked={!!activeNiche.is_active} onCheckedChange={toggleVisibility} />
+              </label>
+            )}
             <Button
               variant="outline"
               size="sm"

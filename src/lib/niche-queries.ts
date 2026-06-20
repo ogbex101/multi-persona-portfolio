@@ -24,6 +24,19 @@ export const allNichesQuery = () =>
     staleTime: 60_000,
   });
 
+// Admin variant: returns every niche, including hidden (is_active = false) ones,
+// so they can still be selected and un-hidden from the dashboard.
+export const allNichesAdminQuery = () =>
+  queryOptions({
+    queryKey: ["niches", "admin", "all"],
+    queryFn: async (): Promise<Niche[]> => {
+      const { data, error } = await supabase.from("niches").select("*").order("sort_order");
+      if (error) throw error;
+      return data as Niche[];
+    },
+    staleTime: 30_000,
+  });
+
 export const nicheBundleQuery = (slug: string) =>
   queryOptions({
     queryKey: ["niche-bundle", slug],
@@ -66,7 +79,9 @@ export const nicheBundleQuery = (slug: string) =>
       ]);
 
       const limitsMap: Record<string, number> = {};
-      (limits.data ?? []).forEach((l: any) => { limitsMap[l.section_name] = l.max_display; });
+      (limits.data ?? []).forEach((l: any) => {
+        limitsMap[l.section_name] = l.max_display;
+      });
 
       return {
         niche,

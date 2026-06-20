@@ -1,5 +1,28 @@
 import type { NicheBundle } from "@/lib/niche-queries";
 import { SectionShell } from "./SectionShell";
+import { Slideshow } from "./Slideshow";
+
+function DesignCard({ e }: { e: any }) {
+  return (
+    <article className="group h-full overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-smooth hover:-translate-y-1 hover:shadow-elegant">
+      <div className="aspect-[4/5] overflow-hidden bg-muted">
+        <img
+          src={e.preview_url}
+          alt={e.title}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+      <div className="p-5">
+        <h3 className="font-display text-lg font-semibold">{e.title}</h3>
+        {e.client_name && (
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">{e.client_name}</p>
+        )}
+        {e.description && <p className="mt-2 text-sm text-muted-foreground">{e.description}</p>}
+      </div>
+    </article>
+  );
+}
 
 export function EmailDesigns({
   bundle,
@@ -25,34 +48,20 @@ export function EmailDesigns({
       viewAllTo={!showAll ? "/niche/$slug/email-designs" : undefined}
       viewAllParams={!showAll ? { slug: bundle.niche.slug } : undefined}
     >
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {list.map((e: any) => (
-          <article
-            key={e.id}
-            className="group overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-smooth hover:-translate-y-1 hover:shadow-elegant"
-          >
-            <div className="aspect-[4/5] overflow-hidden bg-muted">
-              <img
-                src={e.preview_url}
-                alt={e.title}
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                loading="lazy"
-              />
-            </div>
-            <div className="p-5">
-              <h3 className="font-display text-lg font-semibold">{e.title}</h3>
-              {e.client_name && (
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                  {e.client_name}
-                </p>
-              )}
-              {e.description && (
-                <p className="mt-2 text-sm text-muted-foreground">{e.description}</p>
-              )}
-            </div>
-          </article>
-        ))}
-      </div>
+      {showAll ? (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {list.map((e: any) => (
+            <DesignCard key={e.id} e={e} />
+          ))}
+        </div>
+      ) : (
+        <Slideshow
+          items={list}
+          ariaLabel="Email designs"
+          perView={[1, 2, 3]}
+          renderItem={(e: any) => <DesignCard key={e.id} e={e} />}
+        />
+      )}
     </SectionShell>
   );
 }

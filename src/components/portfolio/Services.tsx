@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { allNichesQuery } from "@/lib/niche-queries";
 import { SectionShell } from "./SectionShell";
-import { Reveal } from "./Reveal";
+import { Slideshow } from "./Slideshow";
 import * as Icons from "lucide-react";
 import { ArrowUpRight, Mail, LineChart, Boxes, Clapperboard, Sparkles } from "lucide-react";
 
@@ -35,23 +35,27 @@ export function Services({ bundle }: { bundle: NicheBundle }) {
       alt
     >
       {list.length > 0 && (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((svc: any, i: number) => {
+        <Slideshow
+          items={list}
+          ariaLabel="Services"
+          perView={[1, 2, 3]}
+          renderItem={(svc: any) => {
             const Icon = (Icons[svc.icon as keyof typeof Icons] as any) ?? Sparkles;
             return (
-              <Reveal key={svc.id} variant="up" delay={i * 80}>
-                <div className="group relative h-full overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-soft transition-smooth hover:-translate-y-1 hover:shadow-elegant">
-                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-brand opacity-0 transition-opacity group-hover:opacity-100" />
-                  <div className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-brand text-primary-foreground shadow-elegant">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-4 font-display text-lg font-semibold">{svc.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{svc.description}</p>
+              <div
+                key={svc.id}
+                className="group relative h-full overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-soft transition-smooth hover:-translate-y-1 hover:shadow-elegant"
+              >
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-brand opacity-0 transition-opacity group-hover:opacity-100" />
+                <div className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-brand text-primary-foreground shadow-elegant">
+                  <Icon className="h-5 w-5" />
                 </div>
-              </Reveal>
+                <h3 className="mt-4 font-display text-lg font-semibold">{svc.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{svc.description}</p>
+              </div>
             );
-          })}
-        </div>
+          }}
+        />
       )}
 
       {others.length > 0 && (
@@ -60,33 +64,36 @@ export function Services({ bundle }: { bundle: NicheBundle }) {
             <h3 className="font-display text-lg font-semibold">Other things I do</h3>
             <div className="h-px flex-1 bg-border" />
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {others.map((n, i) => {
+          <Slideshow
+            items={others}
+            ariaLabel="Other niches"
+            perView={[1, 2, 4]}
+            interval={6000}
+            renderItem={(n: any) => {
               const meta = NICHE_META[n.slug] ?? {
                 icon: Sparkles,
                 blurb: "Explore this part of my work.",
               };
               const Icon = meta.icon;
               return (
-                <Reveal key={n.id} variant="zoom" delay={i * 80}>
-                  <Link
-                    to="/niche/$slug"
-                    params={{ slug: n.slug }}
-                    className="group flex h-full flex-col rounded-2xl border border-border bg-surface p-5 shadow-soft transition-smooth hover:-translate-y-1 hover:border-[color:var(--brand-primary-hex)] hover:shadow-elegant"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="grid h-10 w-10 place-items-center rounded-lg border border-border bg-card text-[color:var(--brand-primary-hex)]">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                <Link
+                  key={n.id}
+                  to="/niche/$slug"
+                  params={{ slug: n.slug }}
+                  className="group flex h-full flex-col rounded-2xl border border-border bg-surface p-5 shadow-soft transition-smooth hover:-translate-y-1 hover:border-[color:var(--brand-primary-hex)] hover:shadow-elegant"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="grid h-10 w-10 place-items-center rounded-lg border border-border bg-card text-[color:var(--brand-primary-hex)]">
+                      <Icon className="h-5 w-5" />
                     </div>
-                    <h4 className="mt-4 font-semibold">{n.display_name}</h4>
-                    <p className="mt-1 text-sm text-muted-foreground">{meta.blurb}</p>
-                  </Link>
-                </Reveal>
+                    <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                  </div>
+                  <h4 className="mt-4 font-semibold">{n.display_name}</h4>
+                  <p className="mt-1 text-sm text-muted-foreground">{meta.blurb}</p>
+                </Link>
               );
-            })}
-          </div>
+            }}
+          />
         </div>
       )}
     </SectionShell>
